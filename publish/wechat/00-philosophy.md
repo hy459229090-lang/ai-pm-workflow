@@ -96,3 +96,15 @@
 ---
 
 *我是 RicHe，产品经理，专注 AI 产品设计。这个系列记录的是我在实际工作中验证过的方法，不是理论推演。如果你也在探索 AI 辅助工作流，欢迎关注交流。*
+
+---
+
+## 头图
+
+**提示词（中文）**：
+
+> 微信公众号头图，900×383 比例，深藏青色渐变背景。画面左侧是一个简约的产品经理人物轮廓，右侧延伸出多条连接线连接到"PRD""数据""设计""决策"四个浮动标签，中间有一个发光的 AI 芯片图标串联所有连线。顶部白色大字"AI 工作流：工作方式的变化"。整体扁平插画风格，科技感，简洁。
+
+**英文提示词**：
+
+> WeChat article header image, 2.35:1 aspect ratio, dark navy gradient background. Left side: minimalist silhouette of a product manager. Right side: multiple connection lines extending to floating labels "PRD" "Data" "Design" "Decision", with a glowing AI chip icon in the center connecting all lines. Top white text "AI Workflow: A Shift in How You Work". Flat illustration style, tech aesthetic, clean and minimal.

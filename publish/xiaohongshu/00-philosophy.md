@@ -36,5 +36,16 @@ github.com/hy459229090-lang/ai-pm-workflow
 
 ---
 
-标签建议：#AI工作流 #产品经理 #Claude #效率提升 #AI办公
-封面建议：「PM + AI 工作流」关键词卡片图，突出"上下文工程"概念
+#AI工作流 #产品经理 #Claude #效率提升 #AI办公 #上下文工程 #AI产品经理 #职场效率
+
+---
+
+## 封面图
+
+**提示词（中文，适用于即梦/MidJourney/DALL-E）**：
+
+> 信息卡片风格封面图，深藏青色渐变背景。画面中央大字标题"AI工作流"，白色无衬线字体。副标题"产品经理的下一个基础能力"，浅灰色小字。左侧有一个简约的人形图标连接着三个齿轮图标，象征人机协作。右下角小字"RicHe · AI-PM-Workflow"。整体风格简洁科技感，无多余装饰。尺寸 3:4 竖版。
+
+**英文提示词（适用于 MidJourney/DALL-E）**：
+
+> Minimalist info-card style cover, dark navy gradient background. Large centered title text "AI Workflow" in white sans-serif font. Subtitle "Context Engineering > Model Selection" in light gray. Left side: simple human icon connected to three gear icons symbolizing human-AI collaboration. Clean tech aesthetic, no clutter. Aspect ratio 3:4 vertical.

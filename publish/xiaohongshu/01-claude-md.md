@@ -38,5 +38,16 @@ github.com/hy459229090-lang/ai-pm-workflow
 
 ---
 
-标签建议：#AI工作流 #CLAUDE.md #产品经理 #AI办公 #效率工具
-封面建议：左右对比图 —— 左边"没有CLAUDE.md"（AI输出废话），右边"有CLAUDE.md"（精准输出）
+#AI工作流 #产品经理 #CLAUDE教程 #AI办公 #效率工具 #Cursor #AI编程 #上下文工程
+
+---
+
+## 封面图
+
+**提示词（中文）**：
+
+> 信息卡片对比风格封面图，深灰色背景，画面分为左右两栏。左栏标题"没有 CLAUDE.md"，下方红色区域显示一段模糊的通用文字，打上红色叉号。右栏标题"有 CLAUDE.md"，下方绿色区域显示一段清晰的结构化文字，打上绿色对勾。底部大字"1个文件的区别"。整体风格简洁信息图，科技感。尺寸 3:4 竖版。
+
+**英文提示词**：
+
+> Info-card comparison cover, dark gray background, split into left and right columns. Left column titled "Without CLAUDE.md" with a red zone showing blurred generic text and a red X mark. Right column titled "With CLAUDE.md" with a green zone showing clear structured text and a green checkmark. Bottom large text "One file makes the difference". Clean infographic style, tech aesthetic. Aspect ratio 3:4 vertical.

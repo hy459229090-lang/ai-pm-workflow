@@ -139,3 +139,15 @@ CLAUDE.md 就是普通 Markdown 文件，有仓库权限就能看。它同时也
 
 *作者：RicHe | 产品经理，专注 AI 产品设计*
 *这个系列基于实际项目验证，不是理论推演。*
+
+---
+
+## 头图
+
+**提示词（中文）**：
+
+> 微信公众号头图，900×383 比例，深灰色背景。画面分为左右对比：左侧是一个模糊的文档图标配灰色文字"通用助手"，右侧是一个清晰的文档图标配亮蓝色文字"项目专家"，中间有一个箭头指向右侧，箭头上方悬浮着"CLAUDE.md"文件图标。底部白色小字"一个文件的区别"。扁平设计，科技风格。
+
+**英文提示词**：
+
+> WeChat article header, 2.35:1 ratio, dark gray background. Left-right comparison: left side has a blurred document icon with gray text "Generic Assistant", right side has a sharp document icon with bright blue text "Project Expert". An arrow points from left to right, with a "CLAUDE.md" file icon floating above it. Bottom white subtitle "One file makes the difference". Flat design, tech style.
