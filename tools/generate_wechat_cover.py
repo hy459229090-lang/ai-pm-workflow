@@ -70,26 +70,44 @@ def generate_cover(title, subtitle, tag, output_path, colors):
 
 
 def main():
-    # 第 05 篇配置
-    cover_config = {
-        'title': '一个人管 14 个 AI 是什么体验',
-        'subtitle': '从混乱到秩序，我走了 3 个月',
-        'tag': 'Agent Team 实战',
-        'output': 'assets/wechat/05-cover.png',
-        'colors': {
-            'bg_start': (26, 26, 46),    # 深蓝 #1a1a2e
-            'bg_end': (255, 107, 53),    # 橙色 #FF6B35
-            'bg': (26, 26, 46),
-            'accent': (255, 107, 53),
+    import sys
+    article_num = sys.argv[1] if len(sys.argv) > 1 else "05"
+
+    configs = {
+        "05": {
+            'title': '一个人管 14 个 AI 是什么体验',
+            'subtitle': '从混乱到秩序，我走了 3 个月',
+            'tag': 'Agent Team 实战',
+            'output': 'assets/wechat/05-cover.png',
+            'colors': {
+                'bg_start': (26, 26, 46),
+                'bg_end': (255, 107, 53),
+                'bg': (26, 26, 46),
+                'accent': (255, 107, 53),
+            }
+        },
+        "06": {
+            'title': 'AI 给的东西 你敢直接用吗',
+            'subtitle': '3 个信号，该打回重做',
+            'tag': 'AI 产出评估指南',
+            'output': 'assets/wechat/06-cover.png',
+            'colors': {
+                'bg_start': (255, 215, 0),    # 亮黄
+                'bg_end': (255, 196, 0),       # 金黄
+                'bg': (255, 215, 0),
+                'accent': (0, 0, 0),
+            }
         }
     }
 
+    config = configs.get(article_num, configs["05"])
+
     generate_cover(
-        cover_config['title'],
-        cover_config['subtitle'],
-        cover_config['tag'],
-        cover_config['output'],
-        cover_config['colors']
+        config['title'],
+        config['subtitle'],
+        config['tag'],
+        config['output'],
+        config['colors']
     )
 
 

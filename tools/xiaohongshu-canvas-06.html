@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080">
+    <title>小红书轮播图生成器 - 第 06 篇 AI 产出评估</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background: #1a1a1a;
+            padding: 40px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .card {
+            width: 1080px;
+            height: 1440px;
+            position: relative;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        /* P1 封面 - 亮黄色 */
+        .p1 {
+            background: linear-gradient(180deg, #FFD700 0%, #FFC400 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .p1 .title {
+            font-size: 80px;
+            font-weight: 900;
+            color: #000;
+            text-align: center;
+            line-height: 1.3;
+            padding: 0 60px;
+        }
+
+        .p1 .subtitle {
+            font-size: 36px;
+            color: rgba(0,0,0,0.7);
+            margin-top: 40px;
+            font-weight: 500;
+        }
+
+        .p1 .tag {
+            position: absolute;
+            top: 50px;
+            background: rgba(0,0,0,0.1);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 24px;
+            color: #000;
+        }
+
+        .p1 .hook {
+            position: absolute;
+            bottom: 80px;
+            left: 60px;
+            right: 60px;
+            background: #000;
+            color: #FFD700;
+            padding: 20px 30px;
+            border-radius: 12px;
+            font-size: 26px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        /* P2 痛点 - 白底红框 */
+        .p2 {
+            background: #fff;
+            padding: 80px;
+        }
+
+        .p2 .title {
+            font-size: 56px;
+            font-weight: 900;
+            color: #000;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .p2 .stress-box {
+            background: #FFF0F0;
+            border: 3px solid #FF3333;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 30px 0;
+        }
+
+        .p2 .stress {
+            font-size: 70px;
+            font-weight: 900;
+            color: #FF3333;
+            text-align: center;
+        }
+
+        .p2 .list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .p2 .item {
+            font-size: 34px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 15px 0;
+            border-bottom: 1px dashed #ddd;
+        }
+
+        .p2 .item:last-child {
+            border-bottom: none;
+        }
+
+        .p2 .item::before {
+            content: '⚠️';
+            font-size: 36px;
+        }
+
+        .p2 .vote {
+            margin-top: 50px;
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .p2 .vote-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .p2 .vote-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .p2 .vote-option {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 26px;
+            color: #333;
+        }
+
+        .p2 .vote-option .circle {
+            width: 28px;
+            height: 28px;
+            border: 2px solid #999;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        /* P3 案例对比 - 左红右绿 */
+        .p3 {
+            display: flex;
+        }
+
+        .p3 .half {
+            width: 50%;
+            height: 100%;
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .p3 .left {
+            background: #FF3333;
+        }
+
+        .p3 .right {
+            background: #07C160;
+        }
+
+        .p3 .half-title {
+            font-size: 48px;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .p3 .score {
+            font-size: 80px;
+            font-weight: 900;
+            color: #fff;
+            text-align: center;
+            margin: 20px 0;
+            opacity: 0.3;
+        }
+
+        .p3 .example {
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            font-size: 24px;
+            color: #fff;
+            line-height: 1.5;
+        }
+
+        .p3 .verdict {
+            margin-top: auto;
+            font-size: 32px;
+            font-weight: 700;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+        }
+
+        /* P4 评估标准 - 深蓝底 */
+        .p4 {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 80px;
+        }
+
+        .p4 .title {
+            font-size: 52px;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .p4 .criteria {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .p4 .c-item {
+            background: rgba(255,255,255,0.08);
+            border-radius: 14px;
+            padding: 25px 30px;
+            border-left: 5px solid #51cf66;
+        }
+
+        .p4 .c-num {
+            font-size: 40px;
+            font-weight: 900;
+            color: #51cf66;
+            margin-bottom: 10px;
+        }
+
+        .p4 .c-text {
+            font-size: 30px;
+            color: rgba(255,255,255,0.9);
+            line-height: 1.5;
+        }
+
+        .p4 .hook-box {
+            margin-top: 50px;
+            background: rgba(255,107,53,0.2);
+            border: 2px solid #FF6B35;
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .p4 .hook-text {
+            font-size: 28px;
+            color: #FF6B35;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* P5 打回清单 - 白底 */
+        .p5 {
+            background: #fff;
+            padding: 80px;
+        }
+
+        .p5 .title {
+            font-size: 56px;
+            font-weight: 900;
+            color: #000;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .p5 .subtitle {
+            font-size: 32px;
+            color: #666;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .p5 .checklist {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .p5 .check-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px 25px;
+            background: #FFF8F8;
+            border-radius: 12px;
+            border-left: 4px solid #FF3333;
+        }
+
+        .p5 .check-box {
+            width: 32px;
+            height: 32px;
+            border: 2px solid #FF3333;
+            border-radius: 6px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .p5 .check-text {
+            font-size: 28px;
+            color: #333;
+            flex: 1;
+        }
+
+        .p5 .challenge {
+            margin-top: 50px;
+            background: linear-gradient(135deg, #6B3FFF 0%, #4A00FF 100%);
+            border-radius: 16px;
+            padding: 35px;
+            color: #fff;
+        }
+
+        .p5 .challenge-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .p5 .challenge-text {
+            font-size: 24px;
+            line-height: 1.6;
+            opacity: 0.95;
+        }
+
+        /* P6 互动页 - 渐变紫 */
+        .p6 {
+            background: linear-gradient(180deg, #6B3FFF 0%, #4A00FF 100%);
+            padding: 80px;
+            position: relative;
+        }
+
+        .p6 .title {
+            font-size: 52px;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .p6 .question {
+            font-size: 36px;
+            color: rgba(255,255,255,0.9);
+            text-align: center;
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+
+        .p6 .poll {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+
+        .p6 .poll-option {
+            background: rgba(255,255,255,0.15);
+            border-radius: 14px;
+            padding: 25px 30px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            cursor: pointer;
+        }
+
+        .p6 .poll-letter {
+            width: 45px;
+            height: 45px;
+            background: #fff;
+            color: #6B3FFF;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 900;
+            flex-shrink: 0;
+        }
+
+        .p6 .poll-text {
+            font-size: 26px;
+            color: #fff;
+            flex: 1;
+        }
+
+        .p6 .fill-blank {
+            background: rgba(255,255,255,0.1);
+            border-radius: 14px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .p6 .fill-title {
+            font-size: 28px;
+            color: #fff;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .p6 .fill-line {
+            display: flex;
+            align-items: baseline;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .p6 .fill-text {
+            font-size: 26px;
+            color: #fff;
+        }
+
+        .p6 .blank {
+            display: inline-block;
+            width: 180px;
+            height: 40px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 6px;
+            border-bottom: 2px solid #fff;
+        }
+
+        .p6 .cta {
+            position: absolute;
+            bottom: 60px;
+            left: 60px;
+            right: 60px;
+            background: #fff;
+            color: #4A00FF;
+            padding: 25px 35px;
+            border-radius: 50px;
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        }
+
+        .p6 .sign {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 22px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* 下载按钮隐藏 */
+        .btn-container {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- P1 封面 -->
+        <div class="card p1" id="p1">
+            <div class="tag">AI 产出评估指南</div>
+            <div class="title">AI 给的东西<br>你敢直接用吗</div>
+            <div class="subtitle">3 个信号，该打回重做</div>
+            <div class="hook">💬 评论区留下你的"翻车"经历</div>
+        </div>
+
+        <!-- P2 痛点投票 -->
+        <div class="card p2" id="p2">
+            <div class="title">AI 给的产出，你满意吗？</div>
+            <div class="stress-box">
+                <div class="stress">能用，但不敢直接用</div>
+            </div>
+            <div class="list">
+                <div class="item">看起来没问题，一用就出错</div>
+                <div class="item">格式完美，内容空洞</div>
+                <div class="item">逻辑自洽，实际跑不通</div>
+                <div class="item">说得太对，等于没说</div>
+            </div>
+            <div class="vote">
+                <div class="vote-title">🙋 你中了几条？评论区告诉我</div>
+                <div class="vote-options">
+                    <div class="vote-option"><div class="circle"></div> 全中，太难了</div>
+                    <div class="vote-option"><div class="circle"></div> 中 2 条，还能接受</div>
+                    <div class="vote-option"><div class="circle"></div> 没中过，我很强</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- P3 案例对比 -->
+        <div class="card p3" id="p3">
+            <div class="half left">
+                <div class="half-title">❌ 该打回</div>
+                <div class="score">40 分</div>
+                <div class="example">
+                    "用户增长策略：
+                    1. 提升产品质量
+                    2. 加强市场推广
+                    3. 优化用户体验"
+                </div>
+                <div class="verdict">正确但无用<br>等于没说</div>
+            </div>
+            <div class="half right">
+                <div class="half-title">✅ 可通过</div>
+                <div class="score">85 分</div>
+                <div class="example">
+                    "用户增长策略：
+                    1. 下周上线邀请有礼，老带新奖励 7 天会员
+                    2. 投放小红书 KOC，预算 5 万，目标 ROI 1:3
+                    3. 优化注册流程，从 5 步减到 2 步"
+                </div>
+                <div class="verdict">可执行<br>可衡量</div>
+            </div>
+        </div>
+
+        <!-- P4 评估标准 -->
+        <div class="card p4" id="p4">
+            <div class="title">3 个信号，该打回重做</div>
+            <div class="criteria">
+                <div class="c-item">
+                    <div class="c-num">01</div>
+                    <div class="c-text">没有具体数字/时间/负责人<br><span style="opacity:0.6">"尽快优化"→"下周三前完成"</span></div>
+                </div>
+                <div class="c-item">
+                    <div class="c-num">02</div>
+                    <div class="c-text">无法验证真假/对错<br><span style="opacity:0.6">"用户喜欢"→"NPS 提升 10 分"</span></div>
+                </div>
+                <div class="c-item">
+                    <div class="c-num">03</div>
+                    <div class="c-text">没有下一步行动<br><span style="opacity:0.6">"需要改进"→"周三前给 3 个方案"</span></div>
+                </div>
+            </div>
+            <div class="hook-box">
+                <div class="hook-text">💡 你还有什么评估标准？评论区补充</div>
+            </div>
+        </div>
+
+        <!-- P5 打回清单 -->
+        <div class="card p5" id="p5">
+            <div class="title">打回前，先问这 5 个问题</div>
+            <div class="subtitle">自查清单，避免无效返工</div>
+            <div class="checklist">
+                <div class="check-item">
+                    <div class="check-box"></div>
+                    <div class="check-text">目标对齐了吗？（要解决什么问题）</div>
+                </div>
+                <div class="check-item">
+                    <div class="check-box"></div>
+                    <div class="check-text">受众明确吗？（谁来看/用）</div>
+                </div>
+                <div class="check-item">
+                    <div class="check-box"></div>
+                    <div class="check-text">约束说清了吗？（时间/预算/资源）</div>
+                </div>
+                <div class="check-item">
+                    <div class="check-box"></div>
+                    <div class="check-text">格式指定了吗？（表格/文档/PPT）</div>
+                </div>
+                <div class="check-item">
+                    <div class="check-box"></div>
+                    <div class="check-text">例子给了吗？（参考样例）</div>
+                </div>
+            </div>
+            <div class="challenge">
+                <div class="challenge-title">📝 7 天挑战</div>
+                <div class="challenge-text">收藏这篇，下次打回 AI 前先过一遍清单。回来告诉我，返工率降了多少！</div>
+            </div>
+        </div>
+
+        <!-- P6 互动页 -->
+        <div class="card p6" id="p6" style="position: relative;">
+            <div class="title">你的 AI 翻车现场</div>
+            <div class="question">来，说说你被 AI 坑过的经历<br>让大家都避避雷</div>
+
+            <div class="poll">
+                <div class="poll-option">
+                    <div class="poll-letter">A</div>
+                    <div class="poll-text">一本正经胡说八道（数据造假）</div>
+                </div>
+                <div class="poll-option">
+                    <div class="poll-letter">B</div>
+                    <div class="poll-text">正确的废话（等于没说）</div>
+                </div>
+                <div class="poll-option">
+                    <div class="poll-letter">C</div>
+                    <div class="poll-text">理解偏差（牛头不对马嘴）</div>
+                </div>
+                <div class="poll-option">
+                    <div class="poll-letter">D</div>
+                    <div class="poll-text">格式灾难（没法直接用）</div>
+                </div>
+            </div>
+
+            <div class="fill-blank">
+                <div class="fill-title">📝 填空题：我最讨厌 AI______</div>
+                <div class="fill-line">
+                    <span class="fill-text">我先来：我最讨厌 AI</span>
+                    <span class="blank"></span>
+                </div>
+            </div>
+
+            <div class="cta">👇 评论区见，等你故事</div>
+            <div class="sign">RicHe · AI-PM-Workflow</div>
+        </div>
+
+    </div>
+
+    <script>
+        function downloadCanvas(canvas, filename) {
+            canvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                a.click();
+                URL.revokeObjectURL(url);
+            }, 'image/png');
+        }
+
+        async function captureAndDownload(elementId, filename) {
+            const element = document.getElementById(elementId);
+            const canvas = await html2canvas(element, {
+                width: 1080,
+                height: 1440,
+                scale: 1,
+                useCORS: true,
+                logging: false
+            });
+            downloadCanvas(canvas, filename);
+        }
+
+        function downloadP1() { captureAndDownload('p1', '01-cover.png'); }
+        function downloadP2() { captureAndDownload('p2', '02-pain.png'); }
+        function downloadP3() { captureAndDownload('p3', '03-compare.png'); }
+        function downloadP4() { captureAndDownload('p4', '04-criteria.png'); }
+        function downloadP5() { captureAndDownload('p5', '05-checklist.png'); }
+        function downloadP6() { captureAndDownload('p6', '06-engage.png'); }
+
+        async function downloadAll() {
+            const cards = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6'];
+            const filenames = ['01-cover.png', '02-pain.png', '03-compare.png', '04-criteria.png', '05-checklist.png', '06-engage.png'];
+
+            for (let i = 0; i < cards.length; i++) {
+                await captureAndDownload(cards[i], filenames[i]);
+                await new Promise(r => setTimeout(r, 500));
+            }
+        }
+    </script>
+</body>
+</html>
