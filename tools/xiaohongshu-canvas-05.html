@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080">
+    <title>小红书轮播图生成器 - 第 05 篇 Agent Team</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background: #1a1a1a;
+            padding: 40px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .card {
+            width: 1080px;
+            height: 1440px;
+            position: relative;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        /* P1 封面 - 橙色底 */
+        .p1 {
+            background: linear-gradient(135deg, #FF6B35 0%, #FF8C5A 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .p1 .title {
+            font-size: 85px;
+            font-weight: 900;
+            color: #fff;
+            text-align: center;
+            line-height: 1.4;
+            padding: 0 80px;
+        }
+
+        .p1 .subtitle {
+            font-size: 38px;
+            color: rgba(255,255,255,0.9);
+            margin-top: 50px;
+            font-weight: 500;
+        }
+
+        .p1 .tag {
+            position: absolute;
+            top: 60px;
+            background: rgba(255,255,255,0.2);
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 28px;
+            color: #fff;
+        }
+
+        /* P2 痛点 - 白底 */
+        .p2 {
+            background: #fff;
+            padding: 80px;
+        }
+
+        .p2 .title {
+            font-size: 64px;
+            font-weight: 900;
+            color: #000;
+            margin-bottom: 50px;
+        }
+
+        .p2 .stress {
+            font-size: 80px;
+            font-weight: 900;
+            color: #ff3333;
+            text-align: center;
+            margin: 60px 0;
+            padding: 50px;
+            background: #fff0f0;
+            border-radius: 20px;
+        }
+
+        .p2 .list {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .p2 .item {
+            font-size: 38px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .p2 .item::before {
+            content: '😫';
+            font-size: 40px;
+        }
+
+        /* P3 架构演进 - 深蓝底 */
+        .p3 {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 80px;
+        }
+
+        .p3 .title {
+            font-size: 56px;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 60px;
+            text-align: center;
+        }
+
+        .p3 .comparison {
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+        }
+
+        .p3 .version {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 35px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .p3 .version-label {
+            font-size: 32px;
+            color: #ff6b6b;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .p3 .version-label.v2 {
+            color: #51cf66;
+        }
+
+        .p3 .desc {
+            font-size: 30px;
+            color: rgba(255,255,255,0.8);
+            line-height: 1.6;
+        }
+
+        /* P4 角色分工 - 白底 */
+        .p4 {
+            background: #fff;
+            padding: 80px;
+        }
+
+        .p4 .title {
+            font-size: 56px;
+            font-weight: 900;
+            color: #000;
+            margin-bottom: 50px;
+        }
+
+        .p4 .roles {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .p4 .role {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            border-left: 4px solid #07c160;
+        }
+
+        .p4 .role-name {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+        }
+
+        .p4 .role-desc {
+            font-size: 26px;
+            color: #666;
+        }
+
+        /* P5 协作流程 - 渐变紫 */
+        .p5 {
+            background: linear-gradient(180deg, #6B3FFF 0%, #4A00FF 100%);
+            padding: 80px;
+        }
+
+        .p5 .title {
+            font-size: 56px;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .p5 .flow {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .p5 .step {
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .p5 .step-num {
+            width: 40px;
+            height: 40px;
+            background: #fff;
+            color: #6B3FFF;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .p5 .step-text {
+            font-size: 28px;
+            color: #fff;
+        }
+
+        /* P6 判断标准 - 白底 */
+        .p6 {
+            background: #fff;
+            padding: 80px;
+        }
+
+        .p6 .title {
+            font-size: 56px;
+            font-weight: 900;
+            color: #000;
+            margin-bottom: 50px;
+        }
+
+        .p6 .table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 28px;
+        }
+
+        .p6 .table th {
+            padding: 20px;
+            background: #f0f0f0;
+            text-align: left;
+            font-weight: 700;
+        }
+
+        .p6 .table td {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .p6 .table tr:nth-child(even) {
+            background: #fafafa;
+        }
+
+        .p6 .footer {
+            position: absolute;
+            bottom: 60px;
+            left: 60px;
+            font-size: 32px;
+            color: #666;
+        }
+
+        .p6 .sign {
+            position: absolute;
+            bottom: 60px;
+            right: 60px;
+            font-size: 26px;
+            color: #999;
+        }
+
+        /* 下载按钮隐藏 */
+        .btn-container {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- P1 封面 -->
+        <div class="card p1" id="p1">
+            <div class="tag">Agent Team 实战</div>
+            <div class="title">一个人管 14 个 AI<br>是什么体验</div>
+            <div class="subtitle">从混乱到秩序，我走了 3 个月</div>
+        </div>
+
+        <!-- P2 痛点 -->
+        <div class="card p2" id="p2">
+            <div class="title">14 个 AI 给我干活<br>我比我们自己干还累</div>
+            <div class="stress">人肉路由器</div>
+            <div class="list">
+                <div class="item">每个信息都要经过我</div>
+                <div class="item">每个冲突都要我来裁决</div>
+                <div class="item">每隔 5 分钟切换一次对话</div>
+                <div class="item">进度混乱，没人统筹</div>
+            </div>
+        </div>
+
+        <!-- P3 架构演进 -->
+        <div class="card p3" id="p3">
+            <div class="title">两版架构对比</div>
+            <div class="comparison">
+                <div class="version">
+                    <div class="version-label">❌ 第一版：完全分布式</div>
+                    <div class="desc">把 14 个 AI 拉进群，说"你们自己干"。结果一片混乱，我是人肉路由器。</div>
+                </div>
+                <div class="version">
+                    <div class="version-label v2">✅ 第二版：主从架构 + 评审机制</div>
+                    <div class="desc">设队长统筹全局，定义输入输出，设置评审点，冲突由评审组裁决。我只跟队长对话。</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- P4 角色分工 -->
+        <div class="card p4" id="p4">
+            <div class="title">6 个核心角色</div>
+            <div class="roles">
+                <div class="role">
+                    <div class="role-name">队长 Agent</div>
+                    <div class="role-desc">统筹分发，我只跟他对话</div>
+                </div>
+                <div class="role">
+                    <div class="role-name">产品 Agent</div>
+                    <div class="role-desc">写 PRD、用户故事</div>
+                </div>
+                <div class="role">
+                    <div class="role-name">技术 Agent</div>
+                    <div class="role-desc">架构设计、API 定义</div>
+                </div>
+                <div class="role">
+                    <div class="role-name">数据 Agent</div>
+                    <div class="role-desc">埋点方案、看板设计</div>
+                </div>
+                <div class="role">
+                    <div class="role-name">测试 Agent</div>
+                    <div class="role-desc">测试用例、边界场景</div>
+                </div>
+                <div class="role">
+                    <div class="role-name">评审 Agent</div>
+                    <div class="role-desc">审查产出，通过/打回</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- P5 协作流程 -->
+        <div class="card p5" id="p5">
+            <div class="title">协作流程</div>
+            <div class="flow">
+                <div class="step">
+                    <div class="step-num">1</div>
+                    <div class="step-text">你 → 队长 Agent：需求描述</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <div class="step-text">队长 → 产品 Agent：写 PRD</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <div class="step-text">产品 Agent → 评审 Agent：PRD 评审</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">4</div>
+                    <div class="step-text">评审通过 → 技术/数据/测试并行工作</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">5</div>
+                    <div class="step-text">各 Agent → 队长：交付</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">6</div>
+                    <div class="step-text">队长 → 你：最终交付物</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- P6 判断标准 -->
+        <div class="card p6" id="p6" style="position: relative;">
+            <div class="title">什么时候拉 Team？</div>
+            <table class="table">
+                <tr>
+                    <th>任务特征</th>
+                    <th>用 Skill</th>
+                    <th>拉 Team</th>
+                </tr>
+                <tr>
+                    <td>产出数量</td>
+                    <td>1 份</td>
+                    <td>≥3 份</td>
+                </tr>
+                <tr>
+                    <td>依赖关系</td>
+                    <td>简单</td>
+                    <td>复杂</td>
+                </tr>
+                <tr>
+                    <td>你的精力</td>
+                    <td>能覆盖</td>
+                    <td>覆盖不了</td>
+                </tr>
+            </table>
+            <div class="footer">一句话：你 review 不过来就拉 Team</div>
+            <div class="sign">RicHe · AI-PM-Workflow</div>
+        </div>
+
+    </div>
+
+    <script>
+        function downloadCanvas(canvas, filename) {
+            canvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                a.click();
+                URL.revokeObjectURL(url);
+            }, 'image/png');
+        }
+
+        async function captureAndDownload(elementId, filename) {
+            const element = document.getElementById(elementId);
+            const canvas = await html2canvas(element, {
+                width: 1080,
+                height: 1440,
+                scale: 1,
+                useCORS: true,
+                logging: false
+            });
+            downloadCanvas(canvas, filename);
+        }
+
+        function downloadP1() { captureAndDownload('p1', '01-cover.png'); }
+        function downloadP2() { captureAndDownload('p2', '02-pain.png'); }
+        function downloadP3() { captureAndDownload('p3', '03-architecture.png'); }
+        function downloadP4() { captureAndDownload('p4', '04-roles.png'); }
+        function downloadP5() { captureAndDownload('p5', '05-flow.png'); }
+        function downloadP6() { captureAndDownload('p6', '06-criteria.png'); }
+
+        async function downloadAll() {
+            const cards = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6'];
+            const filenames = ['01-cover.png', '02-pain.png', '03-architecture.png', '04-roles.png', '05-flow.png', '06-criteria.png'];
+
+            for (let i = 0; i < cards.length; i++) {
+                await captureAndDownload(cards[i], filenames[i]);
+                await new Promise(r => setTimeout(r, 500));
+            }
+        }
+    </script>
+</body>
+</html>

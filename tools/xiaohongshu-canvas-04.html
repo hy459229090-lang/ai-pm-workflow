@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080">
+    <title>小红书轮播图生成器 - 第 04 篇</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background: #1a1a1a;
+            padding: 40px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .card {
+            width: 1080px;
+            height: 1440px;
+            position: relative;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        /* P1 封面 - 亮黄底 */
+        .p1 {
+            background: #FFD700;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .p1 .title {
+            font-size: 100px;
+            font-weight: 900;
+            color: #000;
+            text-align: center;
+            line-height: 1.4;
+            padding: 0 80px;
+        }
+
+        .p1 .subtitle {
+            font-size: 36px;
+            color: #666;
+            margin-top: 50px;
+            font-weight: 500;
+        }
+
+        /* P2 痛点 - 白底对话 */
+        .p2 {
+            background: #fff;
+            padding: 80px;
+        }
+
+        .p2 .title {
+            font-size: 68px;
+            font-weight: 900;
+            color: #000;
+            margin-bottom: 60px;
+            text-align: center;
+        }
+
+        .p2 .chat {
+            display: flex;
+            flex-direction: column;
+            gap: 35px;
+            margin-bottom: 80px;
+            padding: 0 40px;
+        }
+
+        .p2 .bubble {
+            background: #f0f0f0;
+            padding: 25px 35px;
+            border-radius: 16px;
+            font-size: 34px;
+            color: #333;
+            align-self: flex-start;
+            max-width: 85%;
+        }
+
+        .p2 .bubble:nth-child(2) { opacity: 1; }
+        .p2 .bubble:nth-child(3) { opacity: 0.65; }
+        .p2 .bubble:nth-child(4) { opacity: 0.35; }
+
+        .p2 .question {
+            font-size: 75px;
+            font-weight: 900;
+            color: #ff3333;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .p2 .time-waste {
+            text-align: center;
+            font-size: 32px;
+            color: #999;
+            margin-top: 50px;
+            padding-top: 40px;
+            border-top: 2px solid #eee;
+        }
+
+        /* P3 对比 - 左红右绿 */
+        .p3 {
+            display: flex;
+            position: relative;
+        }
+
+        .p3 .left {
+            flex: 1;
+            background: #ff4444;
+            padding: 60px;
+        }
+
+        .p3 .right {
+            flex: 1;
+            background: #00c853;
+            padding: 60px;
+        }
+
+        .p3 .time {
+            font-size: 50px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 30px;
+        }
+
+        .p3 .content {
+            background: #fff;
+            border-radius: 16px;
+            padding: 30px;
+            font-size: 28px;
+            color: #333;
+            line-height: 1.8;
+        }
+
+        .p3 .content.short {
+            font-size: 42px;
+            font-weight: 700;
+            text-align: center;
+            padding: 50px 30px;
+        }
+
+        .p3 .arrow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 100px;
+            color: #fff;
+            background: #333;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* P4 核心洞察 - 电光紫 */
+        .p4 {
+            background: linear-gradient(135deg, #4A00FF 0%, #6B3FFF 100%);
+            padding: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .p4 .wrong {
+            font-size: 48px;
+            color: rgba(255,255,255,0.5);
+            text-decoration: line-through;
+            margin-bottom: 50px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .p4 .wrong .icon {
+            font-size: 50px;
+        }
+
+        .p4 .right {
+            font-size: 70px;
+            color: #fff;
+            font-weight: 900;
+            margin-bottom: 60px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .p4 .right .icon {
+            font-size: 60px;
+        }
+
+        .p4 .note {
+            font-size: 36px;
+            color: rgba(255,255,255,0.8);
+            text-align: center;
+            padding: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 16px;
+            margin-top: 40px;
+        }
+
+        .p4 .analogy {
+            margin-top: 50px;
+            padding: 30px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            font-size: 30px;
+            color: rgba(255,255,255,0.9);
+            line-height: 1.6;
+        }
+
+        /* P5 坑 - 白底 */
+        .p5 {
+            background: #fff;
+            padding: 80px;
+        }
+
+        .p5 .title {
+            font-size: 64px;
+            font-weight: 900;
+            color: #000;
+            margin-bottom: 60px;
+        }
+
+        .p5 .list {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .p5 .item {
+            font-size: 40px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            padding: 25px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .p5 .item::before {
+            content: '⚠️';
+            font-size: 40px;
+        }
+
+        .p5 .solution {
+            position: absolute;
+            bottom: 60px;
+            left: 60px;
+            right: 60px;
+            border: 4px solid #000;
+            padding: 35px;
+            font-size: 42px;
+            font-weight: 700;
+            text-align: center;
+            background: #fff;
+        }
+
+        /* P6 互动 - 白底 */
+        .p6 {
+            background: #fff;
+            padding: 80px;
+        }
+
+        .p6 .title {
+            font-size: 64px;
+            font-weight: 900;
+            color: #000;
+            margin-bottom: 80px;
+        }
+
+        .p6 .options {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .p6 .option {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            font-size: 44px;
+            color: #333;
+            padding: 30px;
+            border: 2px solid #eee;
+            border-radius: 16px;
+        }
+
+        .p6 .checkbox {
+            width: 50px;
+            height: 50px;
+            border: 3px solid #999;
+            border-radius: 8px;
+        }
+
+        .p6 .footer {
+            position: absolute;
+            bottom: 60px;
+            left: 60px;
+            font-size: 36px;
+            color: #666;
+        }
+
+        .p6 .sign {
+            position: absolute;
+            bottom: 60px;
+            right: 60px;
+            font-size: 28px;
+            color: #999;
+        }
+
+        /* 下载按钮 */
+        .btn-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn {
+            background: #07c160;
+            color: #fff;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(7, 193, 96, 0.4);
+        }
+
+        .btn:hover {
+            background: #06ad56;
+        }
+
+        .status {
+            text-align: center;
+            padding: 20px;
+            color: #fff;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- P1 封面 -->
+        <div class="card p1" id="p1">
+            <div class="title">我让 AI 跑了 7 天数据<br>老板问我是不是换了人</div>
+            <div class="subtitle">不会 SQL 的产品怎么活下来的？</div>
+        </div>
+
+        <!-- P2 痛点 -->
+        <div class="card p2" id="p2">
+            <div class="title">每次查数据，都要说一遍</div>
+            <div class="chat">
+                <div class="bubble">帮我查 DAU，用 t_user 表，按 event_time 过滤，排除测试账号...</div>
+                <div class="bubble">帮我查留存，用 t_user 表，按 last_login_time...</div>
+                <div class="bubble">帮我查营收，用 t_order 表，按 created_at...</div>
+            </div>
+            <div class="question">你不累吗？</div>
+            <div class="time-waste">平均每次描述 30 秒 × 每天 5 次 = 浪费 2.5 分钟</div>
+        </div>
+
+        <!-- P3 对比 -->
+        <div class="card p3" id="p3">
+            <div class="left">
+                <div class="time">每次 30 秒</div>
+                <div class="content">
+                    帮我查昨天 DAU<br>
+                    用 t_event_log 表<br>
+                    按 event_time 过滤<br>
+                    排除测试账号 (user_id&lt;1000)<br>
+                    按日期分组...
+                </div>
+            </div>
+            <div class="right">
+                <div class="time">现在 3 秒</div>
+                <div class="content short">/data<br>过去 7 天 DAU</div>
+            </div>
+            <div class="arrow">→</div>
+        </div>
+
+        <!-- P4 洞察 -->
+        <div class="card p4" id="p4">
+            <div class="wrong"><span class="icon">❌</span> Skill = Prompt 模板</div>
+            <div class="right"><span class="icon">✅</span> Skill = 给 AI 加能力</div>
+            <div class="note">不是让它背模板，是让它学会</div>
+            <div class="analogy">
+                <strong>就像招新人：</strong><br>
+                操作手册 = 照着念 → 遇到新情况就懵<br>
+                能力培训 = 学会了 → 自己能判断
+            </div>
+        </div>
+
+        <!-- P5 坑 -->
+        <div class="card p5" id="p5" style="position: relative;">
+            <div class="title">我踩过最大的坑</div>
+            <div class="list">
+                <div class="item">我以为口径一样</div>
+                <div class="item">AI 理解的和我想的不一样</div>
+                <div class="item">算出来差一倍</div>
+            </div>
+            <div class="solution">先对齐定义，再执行</div>
+        </div>
+
+        <!-- P6 互动 -->
+        <div class="card p6" id="p6" style="position: relative;">
+            <div class="title">你在用什么方式做数据分析？</div>
+            <div class="options">
+                <div class="option">
+                    <div class="checkbox"></div>
+                    <div>手动写 SQL</div>
+                </div>
+                <div class="option">
+                    <div class="checkbox"></div>
+                    <div>试过 AI 生成</div>
+                </div>
+                <div class="option">
+                    <div class="checkbox"></div>
+                    <div>还在用 Excel</div>
+                </div>
+            </div>
+            <div class="footer">评论区聊聊，我很好奇</div>
+            <div class="sign">RicHe · AI-PM-Workflow</div>
+        </div>
+
+    </div>
+
+    <div class="btn-container">
+        <button class="btn" onclick="downloadAll()">📥 下载全部 6 张图</button>
+        <button class="btn" onclick="downloadP1()">下载 P1 封面</button>
+        <button class="btn" onclick="downloadP2()">下载 P2 痛点</button>
+        <button class="btn" onclick="downloadP3()">下载 P3 对比</button>
+        <button class="btn" onclick="downloadP4()">下载 P4 洞察</button>
+        <button class="btn" onclick="downloadP5()">下载 P5 坑</button>
+        <button class="btn" onclick="downloadP6()">下载 P6 互动</button>
+    </div>
+
+    <div id="status" class="status"></div>
+
+    <script>
+        function downloadCanvas(canvas, filename) {
+            canvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                a.click();
+                URL.revokeObjectURL(url);
+            }, 'image/png');
+        }
+
+        async function captureAndDownload(elementId, filename) {
+            const element = document.getElementById(elementId);
+            const canvas = await html2canvas(element, {
+                width: 1080,
+                height: 1440,
+                scale: 1,
+                useCORS: true,
+                logging: false
+            });
+            downloadCanvas(canvas, filename);
+            document.getElementById('status').textContent = `已下载：${filename}`;
+        }
+
+        async function downloadAll() {
+            const cards = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6'];
+            const filenames = ['01-cover.png', '02-pain.png', '03-compare.png', '04-insight.png', '05-pitfall.png', '06-engage.png'];
+
+            for (let i = 0; i < cards.length; i++) {
+                document.getElementById('status').textContent = `正在下载：${filenames[i]} (${i+1}/${cards.length})`;
+                await captureAndDownload(cards[i], filenames[i]);
+                await new Promise(r => setTimeout(r, 500));
+            }
+            document.getElementById('status').textContent = '✅ 全部下载完成！';
+        }
+
+        function downloadP1() { captureAndDownload('p1', '01-cover.png'); }
+        function downloadP2() { captureAndDownload('p2', '02-pain.png'); }
+        function downloadP3() { captureAndDownload('p3', '03-compare.png'); }
+        function downloadP4() { captureAndDownload('p4', '04-insight.png'); }
+        function downloadP5() { captureAndDownload('p5', '05-pitfall.png'); }
+        function downloadP6() { captureAndDownload('p6', '06-engage.png'); }
+    </script>
+</body>
+</html>
