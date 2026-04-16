@@ -12,7 +12,7 @@
 
 **不是效率工具，是工作方式的升级。**
 
-[快速开始](#快速开始) · [学习路线图](#学习路线图) · [案例：毛球 App](#贯穿案例毛球-app) · [设计哲学](docs/00-philosophy.md)
+[快速开始](#快速开始) · [学习路线图](#学习路线图) · [案例：毛球 App](#贯穿案例毛球-app) · [设计哲学](content/sources/00-philosophy.md)
 
 </div>
 
@@ -84,21 +84,21 @@ AI 做：收集信息、组织文档、模式化执行、多角度审视。
 
 本仓库按由浅入深组织，每篇独立可用。建议顺序阅读。
 
-> 前置阅读：[**第 0 篇 — 设计哲学**](docs/00-philosophy.md)
+> 前置阅读：[**第 0 篇 — 设计哲学**](content/sources/00-philosophy.md)
 
 ### L1 起步 — 10 分钟见效
 
 | # | 标题 | 你将获得 | 状态 |
 |---|------|---------|------|
-| [01](docs/01-claude-md.md) | 让 AI 理解你的项目：CLAUDE.md | 10 分钟让 AI 变成项目专家 | **已发布** |
-| [02](docs/02-workspace-map.md) | 项目地图：WORKSPACE_MAP | AI 能自己找到任何文档 | **已发布** |
+| [01](content/sources/01-claude-md.md) | 让 AI 理解你的项目：CLAUDE.md | 10 分钟让 AI 变成项目专家 | **已发布** |
+| [02](content/sources/02-workspace-map.md) | 项目地图：WORKSPACE_MAP | AI 能自己找到任何文档 | **已发布** |
 
 ### L2 单点提效 — 每天省 30 分钟
 
 | # | 标题 | 你将获得 | 状态 |
 |---|------|---------|------|
-| [03](docs/03-skills.md) | 把重复工作变成一句话：Skill 设计 | 3 个立刻可用的 Skill | **已发布** |
-| [04](docs/04-data-agent.md) | 数据取数自动化 | 自然语言写 SQL | 待发布 |
+| [03](content/sources/03-skills.md) | 把重复工作变成一句话：Skill 设计 | 3 个立刻可用的 Skill | **已发布** |
+| [04](content/sources/04-data-agent.md) | 数据取数自动化 | 自然语言写 SQL | 待发布 |
 
 ### L3 上下文工程 — AI 开始"理解"你的项目
 
@@ -111,7 +111,7 @@ AI 做：收集信息、组织文档、模式化执行、多角度审视。
 
 | # | 标题 | 你将获得 | 状态 |
 |---|------|---------|------|
-| [07](docs/07-review.md) | AI 产出不失控：Review 机制 | 质量保障流程 | 待发布 |
+| [07](docs/07-review.md) | AI 产出不失控：Review 机制 | 质量保障流程 | **已发布** |
 | [08](docs/08-templates.md) | 模板与规范：让产出一致 | 可复用的模板系统 | 待发布 |
 
 ### L5 多 Agent 协作 — 复杂任务也能跑通
@@ -167,10 +167,10 @@ AI 做：收集信息、组织文档、模式化执行、多角度审视。
 git clone https://github.com/hy459229090-lang/ai-pm-workflow.git
 
 # 2. 阅读第 0 篇，理解核心理念
-#    docs/00-philosophy.md
+#    content/sources/00-philosophy.md
 
 # 3. 跟着第 01 篇，在你自己的项目里创建 CLAUDE.md
-#    docs/01-claude-md.md → templates/CLAUDE.md.template
+#    content/sources/01-claude-md.md → tools/templates/CLAUDE.md.template
 ```
 
 不需要安装任何依赖，不需要配置环境。**本仓库就是一套文档和模板。**
@@ -191,13 +191,27 @@ git clone https://github.com/hy459229090-lang/ai-pm-workflow.git
 
 ```
 ai-pm-workflow/
-├── README.md               ← 你在这里
-├── docs/                    # 分阶段教程（按编号顺序阅读）
-│   └── 00-philosophy.md     # 第 0 篇：设计哲学
-├── case-study/              # 毛球 App 虚构案例
-│   └── README.md            # 产品设定、角色、数据、表结构
-├── templates/               # 可直接复用的模板（逐步填充）
-└── examples/                # 配合教程的示例文件（逐步填充）
+├── README.md                    ← 你在这里
+├── content/                     # 内容中心
+│   ├── sources/                 #   文章源稿（00-06）
+│   │   └── 00-philosophy.md
+│   └── platforms/               #   各平台发布稿
+│       ├── wechat/              #     公众号
+│       ├── zhihu/               #     知乎
+│       └── xiaohongshu/         #     小红书
+├── assets/                      # 图片与静态资源
+│   ├── covers/                  #   公众号封面图
+│   ├── carousels/               #   小红书轮播图
+│   └── archive/                 #   历史版本图片
+├── tools/                       # 工具与模板
+│   ├── generators/              #   图片/HTML 生成脚本
+│   ├── templates/               #   Canvas 模板
+│   └── examples/                #   示例文件
+├── publish/                     # 已发布的产物
+│   ├── wechat-html/             #   公众号可复制 HTML
+│   └── README-canvas.md         #   Canvas 使用文档
+├── case-study/                  # 毛球 App 虚构案例
+└── package.json                 # 依赖（puppeteer）
 ```
 
 ---

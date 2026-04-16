@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080">
+    <title>小红书轮播图生成器 - 第 07 篇 AI Review 机制</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background: #1a1a1a;
+            padding: 40px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .card {
+            width: 1080px;
+            height: 1440px;
+            position: relative;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        /* P1 封面 - 橙色渐变 */
+        .p1 {
+            background: linear-gradient(180deg, #FF6B35 0%, #FF8C5A 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .p1 .tag {
+            position: absolute;
+            top: 50px;
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 24px;
+            color: #fff;
+        }
+
+        .p1 .title {
+            font-size: 76px;
+            font-weight: 900;
+            color: #fff;
+            text-align: center;
+            line-height: 1.3;
+            padding: 0 60px;
+        }
+
+        .p1 .subtitle {
+            font-size: 36px;
+            color: rgba(255,255,255,0.85);
+            margin-top: 40px;
+            font-weight: 500;
+        }
+
+        .p1 .hook {
+            position: absolute;
+            bottom: 80px;
+            left: 60px;
+            right: 60px;
+            background: #fff;
+            color: #FF6B35;
+            padding: 20px 30px;
+            border-radius: 12px;
+            font-size: 26px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        /* P2 翻车故事 - 白底红框 */
+        .p2 {
+            background: #fff;
+            padding: 80px;
+        }
+
+        .p2 .title {
+            font-size: 56px;
+            font-weight: 900;
+            color: #000;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .p2 .story-box {
+            background: #FFF0F0;
+            border: 3px solid #FF3333;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 30px 0;
+        }
+
+        .p2 .story {
+            font-size: 32px;
+            color: #333;
+            line-height: 1.7;
+        }
+
+        .p2 .story .highlight {
+            color: #FF3333;
+            font-weight: 700;
+        }
+
+        .p2 .verdict {
+            font-size: 36px;
+            font-weight: 700;
+            color: #333;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .p2 .alert {
+            font-size: 44px;
+            font-weight: 900;
+            color: #FF6B35;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        /* P3 三道检查点 - 深蓝渐变 */
+        .p3 {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 80px;
+        }
+
+        .p3 .title {
+            font-size: 52px;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .p3 .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .p3 .step {
+            background: rgba(255,255,255,0.08);
+            border-radius: 14px;
+            padding: 25px 30px;
+            border-left: 5px solid #51cf66;
+        }
+
+        .p3 .step-num {
+            font-size: 40px;
+            font-weight: 900;
+            color: #51cf66;
+            margin-bottom: 10px;
+        }
+
+        .p3 .step-title {
+            font-size: 30px;
+            color: rgba(255,255,255,0.9);
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .p3 .step-detail {
+            font-size: 24px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .p3 .bottom-text {
+            margin-top: 50px;
+            font-size: 36px;
+            font-weight: 700;
+            color: #fff;
+            text-align: center;
+        }
+
+        /* P4 检查清单 - 白底 */
+        .p4 {
+            background: #fff;
+            padding: 80px;
+        }
+
+        .p4 .title {
+            font-size: 56px;
+            font-weight: 900;
+            color: #000;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .p4 .checklist {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .p4 .check-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px 25px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 4px solid #07C160;
+        }
+
+        .p4 .check-box {
+            width: 32px;
+            height: 32px;
+            border: 2px solid #07C160;
+            border-radius: 6px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #07C160;
+        }
+
+        .p4 .check-text {
+            font-size: 28px;
+            color: #333;
+            flex: 1;
+        }
+
+        .p4 .insight {
+            margin-top: 50px;
+            font-size: 32px;
+            font-weight: 700;
+            color: #6B3FFF;
+            text-align: center;
+            padding: 30px;
+            background: rgba(107,63,255,0.08);
+            border-radius: 16px;
+        }
+
+        /* P5 AI 自审技巧 - 紫色渐变 */
+        .p5 {
+            background: linear-gradient(135deg, #6B3FFF 0%, #4A00FF 100%);
+            padding: 80px;
+        }
+
+        .p5 .title {
+            font-size: 52px;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .p5 .prompt-box {
+            background: rgba(255,255,255,0.15);
+            border-radius: 16px;
+            padding: 35px;
+            margin-bottom: 40px;
+        }
+
+        .p5 .prompt {
+            font-size: 26px;
+            color: #fff;
+            line-height: 1.8;
+            font-family: 'Courier New', monospace;
+        }
+
+        .p5 .effect {
+            font-size: 36px;
+            font-weight: 700;
+            color: #FFD700;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .p5 .note {
+            font-size: 28px;
+            color: rgba(255,255,255,0.8);
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .p5 .hook-box {
+            margin-top: 50px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .p5 .hook-text {
+            font-size: 28px;
+            color: #fff;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* P6 互动页 - 橙色渐变 */
+        .p6 {
+            background: linear-gradient(180deg, #FF6B35 0%, #FF8C5A 100%);
+            padding: 80px;
+            position: relative;
+        }
+
+        .p6 .title {
+            font-size: 52px;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .p6 .question {
+            font-size: 36px;
+            color: rgba(255,255,255,0.9);
+            text-align: center;
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+
+        .p6 .poll {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+
+        .p6 .poll-option {
+            background: rgba(255,255,255,0.15);
+            border-radius: 14px;
+            padding: 25px 30px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .p6 .poll-letter {
+            width: 45px;
+            height: 45px;
+            background: #fff;
+            color: #FF6B35;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 900;
+            flex-shrink: 0;
+        }
+
+        .p6 .poll-text {
+            font-size: 26px;
+            color: #fff;
+            flex: 1;
+        }
+
+        .p6 .fill-blank {
+            background: rgba(255,255,255,0.1);
+            border-radius: 14px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .p6 .fill-title {
+            font-size: 28px;
+            color: #fff;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .p6 .blank {
+            display: inline-block;
+            width: 250px;
+            height: 40px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 6px;
+            border-bottom: 2px solid #fff;
+        }
+
+        .p6 .cta {
+            position: absolute;
+            bottom: 60px;
+            left: 60px;
+            right: 60px;
+            background: #fff;
+            color: #FF6B35;
+            padding: 25px 35px;
+            border-radius: 50px;
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        }
+
+        .p6 .sign {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 22px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .btn-container {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- P1 封面 -->
+        <div class="card p1" id="p1">
+            <div class="tag">AI Review 机制</div>
+            <div class="title">我让 AI 写 PRD<br>没 review<br>翻车了</div>
+            <div class="subtitle">三道检查点，产出可控</div>
+            <div class="hook">💬 评论区说说你翻过几次车</div>
+        </div>
+
+        <!-- P2 翻车故事 -->
+        <div class="card p2" id="p2">
+            <div class="title">一个真实翻车案例</div>
+            <div class="story-box">
+                <div class="story">
+                    AI 写的 PRD：<br>
+                    <span class="highlight">"用户可以对数据进行管理操作"</span><br><br>
+                    但没区分角色权限——<br>
+                    <span class="highlight">管理员和普通用户都能删数据</span><br><br>
+                    研发做了一半来找我，才发现
+                </div>
+            </div>
+            <div class="verdict">不是 AI 的问题，是我没设检查点</div>
+            <div class="alert">90% 的返工，问题在入口</div>
+        </div>
+
+        <!-- P3 三道检查点 -->
+        <div class="card p3" id="p3">
+            <div class="title">三道检查点</div>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-num">01 入口检查</div>
+                    <div class="step-title">给 AI 的信息够不够？<br>目标 / 背景 / 格式 / 边界</div>
+                    <div class="step-detail">AI 开始工作前</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">02 结构检查</div>
+                    <div class="step-title">骨架对不对？<br>遗漏 / 逻辑 / 格式</div>
+                    <div class="step-detail">初稿后，5 分钟</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">03 细节抽查</div>
+                    <div class="step-title">高风险区域<br>权限 / 金额 / 安全</div>
+                    <div class="step-detail">结构通过后，15 分钟</div>
+                </div>
+            </div>
+            <div class="bottom-text">先看骨架，再看细节</div>
+        </div>
+
+        <!-- P4 检查清单 -->
+        <div class="card p4" id="p4">
+            <div class="title">PRD 检查清单</div>
+            <div class="checklist">
+                <div class="check-item">
+                    <div class="check-box"></div>
+                    <div class="check-text">角色权限区分了吗？</div>
+                </div>
+                <div class="check-item">
+                    <div class="check-box"></div>
+                    <div class="check-text">异常流程覆盖了吗？</div>
+                </div>
+                <div class="check-item">
+                    <div class="check-box"></div>
+                    <div class="check-text">数据边界考虑了吗？</div>
+                </div>
+                <div class="check-item">
+                    <div class="check-box"></div>
+                    <div class="check-text">前后端一致吗？</div>
+                </div>
+                <div class="check-item">
+                    <div class="check-box"></div>
+                    <div class="check-text">验收标准明确了吗？</div>
+                </div>
+                <div class="check-item">
+                    <div class="check-box"></div>
+                    <div class="check-text">AI 自己先审过了吗？</div>
+                </div>
+            </div>
+            <div class="insight">清单不是模板，是你的坑位沉淀</div>
+        </div>
+
+        <!-- P5 AI 自审技巧 -->
+        <div class="card p5" id="p5">
+            <div class="title">隐藏技巧<br>让 AI 自己先审一遍</div>
+            <div class="prompt-box">
+                <div class="prompt">
+                    你是一个有 10 年经验的产品总监。<br>
+                    请审查这份 PRD，重点关注：<br>
+                    1. 有没有遗漏的异常场景？<br>
+                    2. 有没有逻辑矛盾？<br>
+                    3. 有哪些地方研发一定会来问你？
+                </div>
+            </div>
+            <div class="effect">AI 自审能发现 60-70% 的问题</div>
+            <div class="note">剩下 30-40% 是 AI 发现不了的——<br>因为它不知道你的业务细节和历史坑</div>
+            <div class="hook-box">
+                <div class="hook-text">你自审过 AI 的产出吗？评论区聊聊</div>
+            </div>
+        </div>
+
+        <!-- P6 互动页 -->
+        <div class="card p6" id="p6">
+            <div class="title">你的 AI 翻车现场</div>
+            <div class="question">来，说说你被 AI 坑过的经历<br>让大家都避避雷</div>
+
+            <div class="poll">
+                <div class="poll-option">
+                    <div class="poll-letter">A</div>
+                    <div class="poll-text">没 review，直接翻车</div>
+                </div>
+                <div class="poll-option">
+                    <div class="poll-letter">B</div>
+                    <div class="poll-text">全看，太累了</div>
+                </div>
+                <div class="poll-option">
+                    <div class="poll-letter">C</div>
+                    <div class="poll-text">不看，赌 AI 靠谱</div>
+                </div>
+                <div class="poll-option">
+                    <div class="poll-letter">D</div>
+                    <div class="poll-text">有检查机制，但不够细</div>
+                </div>
+            </div>
+
+            <div class="fill-blank">
+                <div class="fill-title">📝 你的检查清单里，第一条是什么？</div>
+                <span class="blank"></span>
+            </div>
+
+            <div class="cta">👇 评论区见，等你故事</div>
+            <div class="sign">RicHe · AI-PM-Workflow</div>
+        </div>
+
+    </div>
+
+    <script>
+        function downloadCanvas(canvas, filename) {
+            canvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                a.click();
+                URL.revokeObjectURL(url);
+            }, 'image/png');
+        }
+
+        async function captureAndDownload(elementId, filename) {
+            const element = document.getElementById(elementId);
+            const canvas = await html2canvas(element, {
+                width: 1080,
+                height: 1440,
+                scale: 1,
+                useCORS: true,
+                logging: false
+            });
+            downloadCanvas(canvas, filename);
+        }
+
+        function downloadP1() { captureAndDownload('p1', '01-cover.png'); }
+        function downloadP2() { captureAndDownload('p2', '02-story.png'); }
+        function downloadP3() { captureAndDownload('p3', '03-checkpoints.png'); }
+        function downloadP4() { captureAndDownload('p4', '04-checklist.png'); }
+        function downloadP5() { captureAndDownload('p5', '05-selfreview.png'); }
+        function downloadP6() { captureAndDownload('p6', '06-engage.png'); }
+
+        async function downloadAll() {
+            const cards = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6'];
+            const filenames = ['01-cover.png', '02-story.png', '03-checkpoints.png', '04-checklist.png', '05-selfreview.png', '06-engage.png'];
+
+            for (let i = 0; i < cards.length; i++) {
+                await captureAndDownload(cards[i], filenames[i]);
+                await new Promise(r => setTimeout(r, 500));
+            }
+        }
+    </script>
+</body>
+</html>
