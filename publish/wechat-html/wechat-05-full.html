@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent Team — 当一个人搞不定的时候</title>
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; line-height: 1.9; color: #333; max-width: 677px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
+.container { background: #fff; padding: 40px; border-radius: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+.btn { position: fixed; bottom: 30px; right: 30px; background: #07c160; color: #fff; border: none; padding: 14px 28px; border-radius: 30px; font-size: 15px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 20px rgba(7, 193, 96, 0.4); }
+.btn:hover { background: #06ad56; }
+</style>
+</head>
+<body>
+<div class="container" id="article">
+
+<h1 style="font-size: 22px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; line-height: 1.4; text-align: center;">我拉了个 AI 群，它们自己把活干了</h1>
+
+<div style="background: #f8f9fa; border-left: 4px solid #07c160; padding: 16px 20px; margin: 20px 0; border-radius: 0 4px 4px 0; color: #555; font-size: 15px;">14 个 AI Agent 协作，我是怎么设计的</div>
+
+<hr style="border: none; height: 1px; background: #e9ecef; margin: 40px 0;">
+
+<em>本文是我用 Agent Team 工作流实战 3 个月的实践沉淀。不是教程，是一个真实工作流从混乱到秩序的演化过程。</em>
+
+<strong>文章约 4500 字，阅读时间 10 分钟。建议先收藏，用到的时候再翻出来看。</strong>
+
+<hr style="border: none; height: 1px; background: #e9ecef; margin: 40px 0;">
+
+<h2 style="font-size: 17px; font-weight: 700; color: #1a1a1a; margin: 35px 0 16px 0; padding-left: 12px; border-left: 4px solid #07c160;">01 为什么需要 Agent Team</h2>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">第 03 篇讲了 Skill——把重复操作封装成原子化能力。</p>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">第 04 篇讲了数据取数——让 AI 成为你的全职数据分析师。</p>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">但用了半年 Skill，我发现了一个新问题：</p>
+
+<strong>有些任务，一个 AI 真的搞不定。</strong>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">不是它不够聪明，是任务本身就涉及多份产出、多个视角、多轮评审。</p>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">举个例子：</p>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">毛球 App（一个宠物社区 + 本地生活服务平台）要做首页推荐 feed 改版——从时间线改成个性化推荐，需要：</p>
+
+<div style="background:#f8f9fa;border-left:4px solid #07c160;padding:16px 20px;margin:20px 0;border-radius:0 4px 4px 0;">
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">一份 PRD（产品需求文档）—— 推荐策略、排序逻辑、冷启动方案</p>
+</div>
+
+<div style="background:#f8f9fa;border-left:4px solid #07c160;padding:16px 20px;margin:20px 0;border-radius:0 4px 4px 0;">
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">一份技术方案（后端 + 算法）—— 召回模型、特征工程、AB 测试框架</p>
+</div>
+
+<div style="background:#f8f9fa;border-left:4px solid #07c160;padding:16px 20px;margin:20px 0;border-radius:0 4px 4px 0;">
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">一份埋点方案（数据追踪）—— 曝光/点击/停留/不感兴趣按钮</p>
+</div>
+
+<div style="background:#f8f9fa;border-left:4px solid #07c160;padding:16px 20px;margin:20px 0;border-radius:0 4px 4px 0;">
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">一份测试用例（QA 视角）—— 推荐结果多样性、极端场景兜底</p>
+</div>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">这四份文档有依赖关系——技术方案要回应 PRD 里的约束，埋点方案要基于功能定义，测试用例要覆盖所有场景。</p>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">更关键的是，<strong>我没法同时关注所有环节的细节</strong>。</p>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">PRD 写得好不好、技术方案可行不可行、埋点有没有遗漏——我的精力和注意力覆盖不了。</p>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">这时候，一个 Skill 不够用了。我需要拉一个 <strong>Agent Team</strong>。</p>
+
+<hr style="border: none; height: 1px; background: #e9ecef; margin: 40px 0;">
+
+<h2 style="font-size: 17px; font-weight: 700; color: #1a1a1a; margin: 35px 0 16px 0; padding-left: 12px; border-left: 4px solid #07c160;">02 Agent Team 是什么</h2>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">最初我理解的 Agent Team 是"多叫几个 AI 一起干活"。</p>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">这个理解是错的，或者说太浅了。</p>
+
+<strong>Agent Team 真正的意义是一套协作机制。</strong> 就像你带团队，不是把一群人拉进一个群，然后说"你们自己干"。
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">你需要：</p>
+
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 明确分工（谁负责什么）</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 定义输入输出（交付标准是什么）</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 设置检查点（什么时候 review）</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 处理冲突（意见不一致听谁的）</p>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">Agent Team 也是一样的逻辑。</p>
+
+<hr style="border: none; height: 1px; background: #e9ecef; margin: 40px 0;">
+
+<h2 style="font-size: 17px; font-weight: 700; color: #1a1a1a; margin: 35px 0 16px 0; padding-left: 12px; border-left: 4px solid #07c160;">03 我的第一个 Agent Team：14 个 AI 的混乱与秩序</h2>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">说一个真实的故事。</p>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">去年 11 月，毛球 App 要做首页推荐 feed 改版——从时间线改成个性化推荐。</p>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">任务拆解出来有：</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 产品分析（竞品分析：小红书/抖音的推荐逻辑、毛球用户画像、社区内容分类）</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 需求定义（PRD：推荐策略、排序逻辑、冷启动方案、负反馈机制）</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 技术方案（召回模型：协同过滤 + 内容召回、特征工程、AB 测试框架）</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 数据埋点（曝光/点击/停留时长/不感兴趣按钮、推荐效果追踪）</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 测试用例（推荐多样性、新用户冷启动、极端场景兜底）</p>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">我一个人肯定干不完——就算每个环节都用 Skill，也得花几周。</p>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">于是我拉了一个 Agent Team，最多时有 14 个 AI 同时在线。</p>
+
+<h3 style="font-size: 15px; font-weight: 600; color: #333; margin: 24px 0 12px 0;">第一版设计：完全分布式</h3>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">我把 14 个 AI 拉进一个群（其实是多个对话线程），然后说：</p>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">"产品分析组先输出毛球竞品分析，然后需求组基于分析写推荐 PRD，技术组基于 PRD 设计推荐方案..."</p>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">结果是一片混乱：</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 产品分析组输出了小红书/抖音的竞品对比，需求组没注意到，还在等我手动转发</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 技术组写的召回方案和 PRD 里的冷启动约束对不上</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 数据组和测试组发现推荐负反馈的定义有歧义，但不知道问谁</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 我每隔 5 分钟要切换一次对话，确认进度、解决冲突</p>
+
+<strong>那一天真的累。14 个 AI 给我干活，我比我自己干还累。</strong>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">晚上 11 点，我盯着屏幕上乱七八糟的对话，意识到一个问题：</p>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">我不是在管团队，我是在当<strong>人肉路由器</strong>——每个信息都要经过我，每个冲突都要我来裁决。</p>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">这不可持续。</p>
+
+<hr style="border: none; height: 1px; background: #e9ecef; margin: 40px 0;">
+
+<h2 style="font-size: 17px; font-weight: 700; color: #1a1a1a; margin: 35px 0 16px 0; padding-left: 12px; border-left: 4px solid #07c160;">04 第二版设计：主从架构 + 评审机制</h2>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">第二天我重新设计了架构。</p>
+
+<h3 style="font-size: 15px; font-weight: 600; color: #333; margin: 24px 0 12px 0;">核心改变</h3>
+
+<div style="background:#f6f8fa;border:1px solid #e1e4e8;border-radius:8px;padding:20px;margin:20px 0;">
+<p style="margin:0 0 16px 0;font-weight:600;color:#1a1a1a;">1. 设一个队长（Lead Agent）</p>
+<p style="margin:8px 0;color:#555;font-size:14px;">负责统筹全局、分发任务、收集产出。我只跟队长对话，不跟组员直接对话。</p>
+</div>
+
+<div style="background:#f6f8fa;border:1px solid #e1e4e8;border-radius:8px;padding:20px;margin:20px 0;">
+<p style="margin:0 0 16px 0;font-weight:600;color:#1a1a1a;">2. 定义清晰的输入输出</p>
+<p style="margin:8px 0;color:#555;font-size:14px;">每个 Agent 只负责一个环节。输入是什么、输出是什么、质量标准是什么。</p>
+</div>
+
+<div style="background:#f6f8fa;border:1px solid #e1e4e8;border-radius:8px;padding:20px;margin:20px 0;">
+<p style="margin:0 0 16px 0;font-weight:600;color:#1a1a1a;">3. 设置评审点</p>
+<p style="margin:8px 0;color:#555;font-size:14px;">关键产出完成后，自动触发评审。评审不通过，打回重做。</p>
+</div>
+
+<div style="background:#f6f8fa;border:1px solid #e1e4e8;border-radius:8px;padding:20px;margin:20px 0;">
+<p style="margin:0 0 16px 0;font-weight:600;color:#1a1a1a;">4. 冲突解决机制</p>
+<p style="margin:8px 0;color:#555;font-size:14px;">技术组和产品组意见不一致？先各自陈述理由，然后由评审组裁决。</p>
+</div>
+
+<h3 style="font-size: 15px; font-weight: 600; color: #333; margin: 24px 0 12px 0;">效果立竿见影</h3>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">那天之后，我只需要做三件事：</p>
+<p style="margin: 12px 0; padding-left: 24px;"><strong>1.</strong> 跟队长说清楚要做什么</p>
+<p style="margin: 12px 0; padding-left: 24px;"><strong>2.</strong> 等队长通知"初稿完成"</p>
+<p style="margin: 12px 0; padding-left: 24px;"><strong>3.</strong> Review 关键节点，给出反馈</p>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">剩下的交给 Team。</p>
+
+<hr style="border: none; height: 1px; background: #e9ecef; margin: 40px 0;">
+
+<h2 style="font-size: 17px; font-weight: 700; color: #1a1a1a; margin: 35px 0 16px 0; padding-left: 12px; border-left: 4px solid #07c160;">05 什么时候需要拉 Agent Team</h2>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">这可能是这篇最有价值的部分。</p>
+
+<h3 style="font-size: 15px; font-weight: 600; color: #333; margin: 24px 0 12px 0;">我的判断标准</h3>
+
+<table style="width:100%;border-collapse:collapse;margin:20px 0;font-size:14px;background:#fff;">
+<thead>
+<tr style="background:#f6f8fa;">
+<th style="border:1px solid #e1e4e8;padding:12px 10px;text-align:left;font-weight:600;">任务特征</th>
+<th style="border:1px solid #e1e4e8;padding:12px 10px;text-align:left;font-weight:600;">用 Skill</th>
+<th style="border:1px solid #e1e4e8;padding:12px 10px;text-align:left;font-weight:600;">拉 Team</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">产出数量</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">1 份</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">多份（≥3）</td>
+</tr>
+<tr style="background:#fafbfc;">
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">依赖关系</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">无/简单</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">复杂（A 依赖 B）</td>
+</tr>
+<tr>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">视角需求</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">单一</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">多个（产品/技术/用户/商业）</td>
+</tr>
+<tr style="background:#fafbfc;">
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">你的精力</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">能覆盖全部细节</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">覆盖不了，需要分权</td>
+</tr>
+</tbody>
+</table>
+
+<h3 style="font-size: 15px; font-weight: 600; color: #333; margin: 24px 0 12px 0;">简单说</h3>
+
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> <strong>流程固定、一次出结果</strong> → 用 Skill</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> <strong>多份产出、需要交叉审视、你 review 不过来</strong> → 拉 Team</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> <strong>一次性的创造性工作</strong> → 直接跟 AI 对话就行</p>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">这个边界说实话我也还在摸索。</p>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">有时候以为 Skill 够用，做到一半发现得拉 Team。也有觉得需要 Team 的，后来发现一个好的 Skill 就搞定了。</p>
+
+<hr style="border: none; height: 1px; background: #e9ecef; margin: 40px 0;">
+
+<h2 style="font-size: 17px; font-weight: 700; color: #1a1a1a; margin: 35px 0 16px 0; padding-left: 12px; border-left: 4px solid #07c160;">06 怎么写一个 Agent Team</h2>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">以毛球 App 的"需求分析"Team 为例。</p>
+
+<h3 style="font-size: 15px; font-weight: 600; color: #333; margin: 24px 0 12px 0;">第 1 步：定义任务边界</h3>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">这个 Team 要做什么：</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 输入：一个产品想法/需求</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 输出：PRD + 技术方案 + 埋点方案 + 测试用例</p>
+
+<h3 style="font-size: 15px; font-weight: 600; color: #333; margin: 24px 0 12px 0;">第 2 步：设计角色分工</h3>
+
+<table style="width:100%;border-collapse:collapse;margin:20px 0;font-size:14px;background:#fff;">
+<thead>
+<tr style="background:#f6f8fa;">
+<th style="border:1px solid #e1e4e8;padding:12px 10px;text-align:left;font-weight:600;">角色</th>
+<th style="border:1px solid #e1e4e8;padding:12px 10px;text-align:left;font-weight:600;">职责</th>
+<th style="border:1px solid #e1e4e8;padding:12px 10px;text-align:left;font-weight:600;">输入</th>
+<th style="border:1px solid #e1e4e8;padding:12px 10px;text-align:left;font-weight:600;">输出</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">产品 Agent</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">写 PRD</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">产品想法</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">PRD 文档</td>
+</tr>
+<tr style="background:#fafbfc;">
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">技术 Agent</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">设计技术方案</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">PRD</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">技术方案</td>
+</tr>
+<tr>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">数据 Agent</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">设计埋点方案</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">PRD + 技术方案</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">埋点文档</td>
+</tr>
+<tr style="background:#fafbfc;">
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">测试 Agent</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">写测试用例</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">PRD + 技术方案</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">测试用例</td>
+</tr>
+<tr>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">评审 Agent</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">审查所有产出</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">所有文档</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">评审意见</td>
+</tr>
+<tr style="background:#fafbfc;">
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">队长 Agent</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">统筹分发</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">你的需求</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">最终交付物</td>
+</tr>
+</tbody>
+</table>
+
+<h3 style="font-size: 15px; font-weight: 600; color: #333; margin: 24px 0 12px 0;">第 3 步：定义协作流程</h3>
+
+<div style="background:#f6f8fa;border:1px solid #e1e4e8;border-radius:8px;padding:20px;margin:20px 0;font-family:monospace;font-size:13px;line-height:1.8;">
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">你 → 队长 Agent：需求描述<br></p>
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">队长 → 产品 Agent：写 PRD<br></p>
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">产品 Agent → 评审 Agent：PRD 评审<br></p>
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">评审 Agent → 队长：评审通过/打回<br></p>
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">队长 → 技术 Agent + 数据 Agent + 测试 Agent：并行工作<br></p>
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">各 Agent → 队长：交付<br></p>
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">队长 → 你：最终交付物</p>
+</div>
+
+<h3 style="font-size: 15px; font-weight: 600; color: #333; margin: 24px 0 12px 0;">第 4 步：定义质量标准</h3>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">每个环节产出前，定义清楚：</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 必填字段有哪些</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 格式规范是什么</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 自检清单是什么</p>
+
+<h3 style="font-size: 15px; font-weight: 600; color: #333; margin: 24px 0 12px 0;">第 5 步：测试和迭代</h3>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">用几次真实任务测试。你会发现：</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 哪些角色多余（可以合并）</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 哪些环节缺失（需要补充）</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 哪些标准不够细（需要完善）</p>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">我的经验是迭代 3-5 轮才稳定。</p>
+
+<hr style="border: none; height: 1px; background: #e9ecef; margin: 40px 0;">
+
+<h2 style="font-size: 17px; font-weight: 700; color: #1a1a1a; margin: 35px 0 16px 0; padding-left: 12px; border-left: 4px solid #07c160;">07 踩过的坑</h2>
+
+<h3 style="font-size: 15px; font-weight: 600; color: #333; margin: 24px 0 12px 0;">坑 1：队长太忙，变成瓶颈</h3>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">第一版设计里，队长要统筹全局、分发任务、收集产出、解决冲突——累死了。</p>
+
+<strong>解法</strong>：
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 队长只负责分发和收集，不负责审查</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 审查交给评审 Agent</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 冲突由评审组裁决，队长执行</p>
+
+<h3 style="font-size: 15px; font-weight: 600; color: #333; margin: 24px 0 12px 0;">坑 2：评审流于形式</h3>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">评审 Agent 最开始只会说"看起来不错"——没有实际价值。</p>
+
+<strong>解法</strong>：
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 定义评审清单（必须检查的 10 个点）</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 评审意见必须包含"通过/打回" + 具体理由</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 打回次数多了，评审 Agent 会学习</p>
+
+<h3 style="font-size: 15px; font-weight: 600; color: #333; margin: 24px 0 12px 0;">坑 3：产出风格不一致</h3>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">产品 Agent 写的 PRD 和技术 Agent 写的方案风格差异太大，阅读体验很差。</p>
+
+<strong>解法</strong>：
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 定义统一的写作风格指南</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 提供模板（但不规定内容）</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 队长最后统一格式</p>
+
+<hr style="border: none; height: 1px; background: #e9ecef; margin: 40px 0;">
+
+<h2 style="font-size: 17px; font-weight: 700; color: #1a1a1a; margin: 35px 0 16px 0; padding-left: 12px; border-left: 4px solid #07c160;">08 效果对比</h2>
+
+<table style="width:100%;border-collapse:collapse;margin:20px 0;font-size:14px;background:#fff;">
+<thead>
+<tr style="background:#f6f8fa;">
+<th style="border:1px solid #e1e4e8;padding:12px 10px;text-align:left;font-weight:600;">指标</th>
+<th style="border:1px solid #e1e4e8;padding:12px 10px;text-align:left;font-weight:600;">我一个人干</th>
+<th style="border:1px solid #e1e4e8;padding:12px 10px;text-align:left;font-weight:600;">用 Skill</th>
+<th style="border:1px solid #e1e4e8;padding:12px 10px;text-align:left;font-weight:600;">拉 Agent Team</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">时间</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">3-5 天</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">1-2 天</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">2-4 小时</td>
+</tr>
+<tr style="background:#fafbfc;">
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">我的精力投入</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">100%</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">30%</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">10%</td>
+</tr>
+<tr>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">产出质量</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">看状态</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">稳定</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">稳定且全面</td>
+</tr>
+<tr style="background:#fafbfc;">
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">覆盖视角</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">产品</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">产品 + 数据</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">产品 + 技术 + 数据 + 测试</td>
+</tr>
+</tbody>
+</table>
+
+<hr style="border: none; height: 1px; background: #e9ecef; margin: 40px 0;">
+
+<h2 style="font-size: 17px; font-weight: 700; color: #1a1a1a; margin: 35px 0 16px 0; padding-left: 12px; border-left: 4px solid #07c160;">09 核心洞察</h2>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">这一年多折腾下来，我最大的收获：</p>
+
+<strong>Skill 是给 AI 增加能力，Agent Team 是给自己减少负担。</strong>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">Skill 让你不用重复说同一句话。</p>
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">Agent Team 让你不用同时关注所有细节。</p>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">但 Agent Team 不是银弹——它解决的是"多份产出、多视角、你 review 不过来"的问题。</p>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">如果只是一个简单任务，用 Skill 就够了，拉 Team 反而是浪费。</p>
+
+<hr style="border: none; height: 1px; background: #e9ecef; margin: 40px 0;">
+
+<h2 style="font-size: 17px; font-weight: 700; color: #1a1a1a; margin: 35px 0 16px 0; padding-left: 12px; border-left: 4px solid #07c160;">10 讨论</h2>
+
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 你在用 Agent Team 吗？是什么场景？</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 你觉得"管理 AI 比 AI 干活还累"吗？</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 你的 Agent Team 架构是什么样的？</p>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">欢迎在评论区聊聊。</p>
+
+<hr style="border: none; height: 1px; background: #e9ecef; margin: 40px 0;">
+
+<em>上一篇：第 04 篇：让 AI 当你的数据分析师</em>
+
+<em>下一篇：第 06 篇：待定</em>
+
+<em>作者：RicHe | 产品经理，专注 AI 产品设计</em>
+
+<hr style="border: none; height: 1px; background: #e9ecef; margin: 40px 0;">
+
+<strong>源文档</strong>：[[content/sources/05-agent-team|GitHub 完整版]] · [[content/_index|系列总览]]
+</div>
+
+<button class="btn" onclick="copyHTML()">复制 HTML 代码</button>
+
+<script>
+function copyHTML() {
+    const content = document.getElementById('article').innerHTML;
+    navigator.clipboard.writeText(content).then(() => {
+        alert('HTML 已复制到剪贴板！\n\n在公众号后台：\n1. 切换到"源代码模式"\n2. 粘贴 HTML 代码\n3. 切换回编辑模式即可预览');
+    }).catch(err => {
+        const textarea = document.createElement('textarea');
+        textarea.value = content;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        alert('HTML 已复制到剪贴板！');
+    });
+}
+</script>
+</body>
+</html>

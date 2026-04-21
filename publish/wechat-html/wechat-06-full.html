@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 产出评估 — 什么时候该打回重做</title>
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; line-height: 1.9; color: #333; max-width: 677px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
+.container { background: #fff; padding: 40px; border-radius: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+.btn { position: fixed; bottom: 30px; right: 30px; background: #07c160; color: #fff; border: none; padding: 14px 28px; border-radius: 30px; font-size: 15px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 20px rgba(7, 193, 96, 0.4); }
+.btn:hover { background: #06ad56; }
+</style>
+</head>
+<body>
+<div class="container" id="article">
+
+<h1 style="font-size: 22px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; line-height: 1.4; text-align: center;">我让 AI 写了份方案，最后让它重写了 3 遍</h1>
+
+<div style="background: #f8f9fa; border-left: 4px solid #07c160; padding: 16px 20px; margin: 20px 0; border-radius: 0 4px 4px 0; color: #555; font-size: 15px;">评估 AI 产出，我踩过这些坑</div>
+
+<em>本文是我用 AI 协作 1 年多，在"要不要打回重做"这件事上踩过的坑和沉淀的方法。不是教程，是实战经验。</em>
+
+<strong>文章约 4000 字，阅读时间 8 分钟。建议先收藏，用 AI 干活前翻出来看。</strong>
+
+<hr style="border: none; height: 1px; background: #e9ecef; margin: 40px 0;">
+
+<h2 style="font-size: 17px; font-weight: 700; color: #1a1a1a; margin: 35px 0 16px 0; padding-left: 12px; border-left: 4px solid #07c160;">一个真实案例</h2>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">说一个我踩过的坑。</p>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">有一次，毛球 App（一个宠物社区 + 本地生活服务平台）的 DAU 卡在 12 万涨不上去，我让 AI 写一份"用户增长策略"。</p>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">它给我的答案是：</p>
+
+<div style="background: #f8f9fa; border-left: 4px solid #07c160; padding: 16px 20px; margin: 20px 0; border-radius: 0 4px 4px 0; color: #555; font-size: 15px;">1. 提升产品质量</div>
+<div style="background: #f8f9fa; border-left: 4px solid #07c160; padding: 16px 20px; margin: 20px 0; border-radius: 0 4px 4px 0; color: #555; font-size: 15px;">2. 加强市场推广</div>
+<div style="background: #f8f9fa; border-left: 4px solid #07c160; padding: 16px 20px; margin: 20px 0; border-radius: 0 4px 4px 0; color: #555; font-size: 15px;">3. 优化用户体验</div>
+<div style="background: #f8f9fa; border-left: 4px solid #07c160; padding: 16px 20px; margin: 20px 0; border-radius: 0 4px 4px 0; color: #555; font-size: 15px;">4. 建立品牌口碑</div>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">看起来没问题，对吧？</p>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">但仔细一想——<strong>这等于没说</strong>。</p>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">"提升产品质量"——毛球社区的发布率只有 3.2%，具体怎么提升？</p>
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">"加强市场推广"——投什么渠道？宠物垂直平台还是泛娱乐？预算多少？</p>
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">"优化用户体验"——是 AI 问答的准确率不够，还是附近服务的覆盖率低？</p>
+
+<strong>正确，但无用。</strong>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">这就是我说的"该打回"的典型。</p>
+
+<hr style="border: none; height: 1px; background: #e9ecef; margin: 40px 0;">
+
+<h2 style="font-size: 17px; font-weight: 700; color: #1a1a1a; margin: 35px 0 16px 0; padding-left: 12px; border-left: 4px solid #07c160;">什么样的产出该打回？</h2>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">我踩过很多坑之后，总结了 3 个信号：</p>
+
+<h3 style="font-size: 15px; font-weight: 600; color: #333; margin: 24px 0 12px 0;">信号 1：没有具体数字/时间/负责人</h3>
+
+<strong>❌ 打回</strong>："尽快完成优化"
+<strong>✅ 通过</strong>："下周三前完成注册流程优化，从 5 步减到 2 步"
+
+<strong>❌ 打回</strong>："提升用户满意度"
+<strong>✅ 通过</strong>："Q2 结束前 NPS 从 35 提升到 45"
+
+<strong>❌ 打回</strong>："加强数据分析"
+<strong>✅ 通过</strong>："每周一上午 10 点前输出上周数据周报，同步到全员群"
+
+<strong>核心原则</strong>：任何模糊的词，都要追问"具体是什么？"
+
+<hr style="border: none; height: 1px; background: #e9ecef; margin: 40px 0;">
+
+<h3 style="font-size: 15px; font-weight: 600; color: #333; margin: 24px 0 12px 0;">信号 2：无法验证真假/对错</h3>
+
+<strong>❌ 打回</strong>："用户喜欢这个功能"
+<strong>✅ 通过</strong>："灰度测试显示，实验组留存率提升 12%"
+
+<strong>❌ 打回</strong>："这个方案更优"
+<strong>✅ 通过</strong>："A/B 测试结果显示，方案 B 点击率高 23%"
+
+<strong>❌ 打回</strong>："市场反馈很好"
+<strong>✅ 通过</strong>："上线 3 天，日活从 1 万到 1.5 万，环比增长 50%"
+
+<strong>核心原则</strong>：任何无法证伪的陈述，都要追问"怎么证明？"
+
+<hr style="border: none; height: 1px; background: #e9ecef; margin: 40px 0;">
+
+<h3 style="font-size: 15px; font-weight: 600; color: #333; margin: 24px 0 12px 0;">信号 3：没有下一步行动</h3>
+
+<strong>❌ 打回</strong>："这个功能需要改进"
+<strong>✅ 通过</strong>："周三前给出 3 个改进方案，包含成本和排期评估"
+
+<strong>❌ 打回</strong>："建议进一步研究"
+<strong>✅ 通过</strong>："本周五前完成竞品调研，输出 3 个可借鉴的 case"
+
+<strong>❌ 打回</strong>："问题已识别"
+<strong>✅ 通过</strong>："问题根因是 X，解决方案 Y，负责人 Z，下周五前完成"
+
+<strong>核心原则</strong>：任何没有 action 的结论，都是耍流氓。
+
+<hr style="border: none; height: 1px; background: #e9ecef; margin: 40px 0;">
+
+<h2 style="font-size: 17px; font-weight: 700; color: #1a1a1a; margin: 35px 0 16px 0; padding-left: 12px; border-left: 4px solid #07c160;">正面案例：什么样的产出可以通过？</h2>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">还是毛球"用户增长策略"的例子。</p>
+
+<strong>✅ 可通过的版本</strong>：
+
+<div style="background: #f6f8fa; border: 1px solid #e1e4e8; border-radius: 6px; padding: 16px; font-family: monospace; font-size: 13px; overflow-x: auto; margin: 16px 0; color: #24292e; white-space: pre-wrap;">毛球用户增长策略（2026 Q2）：
+
+1. 社区"晒宠大赛"活动
+   - 4 月 15 日上线，用户发布宠物图文带 #毛球晒宠# 标签
+   - 点赞前 50 名得宠物用品礼包（单价 80 元）
+   - 预算：2 万，目标带来 3000 条新内容发布
+   - 目标：内容发布率从 3.2% 提升到 5%
+   - 负责人：@运营
+
+2. AI 问答功能上线拉新
+   - 4 月底前完成 AI 宠物健康问答灰度
+   - 针对未注册用户提供 3 次免费问答，引导注册解锁无限次
+   - 目标：从问答页引流注册转化率 15%
+   - 负责人：@产品
+
+3. 宠物医院合作入驻
+   - Q2 完成 50 家宠物医院入驻附近服务
+   - 每家医院首单补贴 10 元，目标带来 2000 单新预约
+   - 服务预约转化率从 1.8% 提升到 3%
+   - 负责人：@商务</div>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">这个版本为什么可以通过？</p>
+
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> ✅ 每个策略都有具体动作</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> ✅ 有明确的时间节点</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> ✅ 有可衡量的目标</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> ✅ 有明确的负责人</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> ✅ 有预算和资源约束</p>
+
+<strong>这才是可执行的方案。</strong>
+
+<hr style="border: none; height: 1px; background: #e9ecef; margin: 40px 0;">
+
+<h2 style="font-size: 17px; font-weight: 700; color: #1a1a1a; margin: 35px 0 16px 0; padding-left: 12px; border-left: 4px solid #07c160;">打回前，先问自己 5 个问题</h2>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">很多时候，问题不在 AI，在你自己。</p>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">打回 AI 之前，先自查：</p>
+
+<div style="background:#f6f8fa;border:1px solid #e1e4e8;border-radius:8px;padding:20px;margin:20px 0;">
+
+<strong>1. 目标对齐了吗？</strong>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">要解决什么问题，说清楚了吗？</p>
+
+</div>
+
+<div style="background:#f6f8fa;border:1px solid #e1e4e8;border-radius:8px;padding:20px;margin:20px 0;">
+
+<strong>2. 受众明确了吗？</strong>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">这份产出谁来看/用，指定了吗？</p>
+
+</div>
+
+<div style="background:#f6f8fa;border:1px solid #e1e4e8;border-radius:8px;padding:20px;margin:20px 0;">
+
+<strong>3. 约束说清了吗？</strong>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">时间/预算/资源限制，告知了吗？</p>
+
+</div>
+
+<div style="background:#f6f8fa;border:1px solid #e1e4e8;border-radius:8px;padding:20px;margin:20px 0;">
+
+<strong>4. 格式指定了吗？</strong>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">要表格/文档/PPT，说明白了吗？</p>
+
+</div>
+
+<div style="background:#f6f8fa;border:1px solid #e1e4e8;border-radius:8px;padding:20px;margin:20px 0;">
+
+<strong>5. 例子给了吗？</strong>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">参考样例，提供了吗？</p>
+
+</div>
+
+<strong>很多时候 AI 产出不好，是因为你的 prompt 本身就没想清楚。</strong>
+
+<hr style="border: none; height: 1px; background: #e9ecef; margin: 40px 0;">
+
+<h2 style="font-size: 17px; font-weight: 700; color: #1a1a1a; margin: 35px 0 16px 0; padding-left: 12px; border-left: 4px solid #07c160;">我的评估框架</h2>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">现在我评估 AI 产出，用一个简单的打分表：</p>
+
+<table style="width:100%;border-collapse:collapse;margin:20px 0;font-size:14px;background:#fff;">
+<thead>
+<tr style="background:#f6f8fa;">
+<th style="border:1px solid #e1e4e8;padding:12px 10px;text-align:left;font-weight:600;">维度</th>
+<th style="border:1px solid #e1e4e8;padding:12px 10px;text-align:left;font-weight:600;">权重</th>
+<th style="border:1px solid #e1e4e8;padding:12px 10px;text-align:left;font-weight:600;">评分标准</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">可执行性</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">30%</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">是否有具体动作/时间/负责人</td>
+</tr>
+<tr style="background:#fafbfc;">
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">可验证性</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">25%</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">是否有数据/指标可衡量</td>
+</tr>
+<tr>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">相关性</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">20%</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">是否回应了核心问题</td>
+</tr>
+<tr style="background:#fafbfc;">
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">完整性</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">15%</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">是否覆盖了关键要点</td>
+</tr>
+<tr>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">格式规范</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">10%</td>
+<td style="border:1px solid #e1e4e8;padding:12px 10px;">是否符合指定格式</td>
+</tr>
+</tbody>
+</table>
+
+<strong>评分标准</strong>：
+
+<strong>总分≥80 分</strong>：可以通过，直接采用
+
+<strong>60-79 分</strong>：需要修改，指出具体问题
+
+<strong><60 分</strong>：打回重做，说明期望标准
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">这个框架的好处是：</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> AI 知道你想要什么</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 你知道怎么给反馈</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 减少了"感觉不对"这种模糊评价</p>
+
+<hr style="border: none; height: 1px; background: #e9ecef; margin: 40px 0;">
+
+<h2 style="font-size: 17px; font-weight: 700; color: #1a1a1a; margin: 35px 0 16px 0; padding-left: 12px; border-left: 4px solid #07c160;">核心洞察</h2>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">这一年多和 AI 协作下来，我最大的收获：</p>
+
+<strong>评估 AI 产出，本质上是训练你的判断力。</strong>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">你不能让 AI 写什么你就信什么，也不能因为它偶尔胡说就完全不用。</p>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">关键是：</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 知道什么是好的</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 知道什么是该打回的</p>
+<p style="margin: 12px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #07c160;">●</span> 知道怎么给反馈让它更好</p>
+
+<strong>AI 不是来替代你的，是来放大你的。</strong>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">但放大之前，你得先有判断力。</p>
+
+<hr style="border: none; height: 1px; background: #e9ecef; margin: 40px 0;">
+
+<h2 style="font-size: 17px; font-weight: 700; color: #1a1a1a; margin: 35px 0 16px 0; padding-left: 12px; border-left: 4px solid #07c160;">互动时间</h2>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">来，说说你用 AI 踩过的坑：</p>
+
+<strong>你最讨厌 AI 的哪种行为？</strong>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">A. 一本正经胡说八道（数据/事实造假）</p>
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">B. 正确的废话（等于没说）</p>
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">C. 理解偏差（牛头不对马嘴）</p>
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">D. 格式灾难（没法直接用）</p>
+
+或者填空题：<strong>"我最讨厌 AI______"</strong>
+
+<p style="margin: 16px 0; text-align: justify; font-size: 15px; line-height: 1.9;">评论区聊聊，我收集整理一下，看看哪些问题是共性的，下次专门写一篇"如何避免"。</p>
+
+<hr style="border: none; height: 1px; background: #e9ecef; margin: 40px 0;">
+
+<em>上一篇：第 05 篇：Agent Team</em>
+
+<em>下一篇：第 07 篇：待定</em>
+
+<em>作者：RicHe | 产品经理，专注 AI 产品设计</em>
+
+<hr style="border: none; height: 1px; background: #e9ecef; margin: 40px 0;">
+
+<strong>源文档</strong>：[[content/sources/06-evaluate|GitHub 完整版]] · [[content/_index|系列总览]]
+</div>
+
+<button class="btn" onclick="copyHTML()">复制 HTML 代码</button>
+
+<script>
+function copyHTML() {
+    const content = document.getElementById('article').innerHTML;
+    navigator.clipboard.writeText(content).then(() => {
+        alert('HTML 已复制到剪贴板！\n\n在公众号后台：\n1. 切换到"源代码模式"\n2. 粘贴 HTML 代码\n3. 切换回编辑模式即可预览');
+    }).catch(err => {
+        const textarea = document.createElement('textarea');
+        textarea.value = content;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        alert('HTML 已复制到剪贴板！');
+    });
+}
+</script>
+</body>
+</html>
