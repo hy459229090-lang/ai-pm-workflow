@@ -1,3 +1,5 @@
+> **⚠️ 已被替代**：本文档为旧版残留，已被 [[content/sources/03-skills|content/sources/03-skills.md]]（毛球 App 完整版）替代，仅作历史参考。请以 `content/sources/` 下的源稿为准。
+
 # 第 03 篇：把重复工作变成一句话 — Skill 与原子化能力
 
 > 一句话：Skill 不是 prompt 模板，是给 AI 增加的手段。手段越多，AI 能帮你完成的工作流就越完整。

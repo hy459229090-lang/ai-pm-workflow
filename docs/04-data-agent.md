@@ -1,3 +1,5 @@
+> **⚠️ 已被替代**：本文档为旧版残留，已被 [[content/sources/04-data-agent|content/sources/04-data-agent.md]]（毛球 App 完整版）替代，仅作历史参考。请以 `content/sources/` 下的源稿为准。
+
 # 第 04 篇：让 AI 当你的数据分析师 — 数据取数自动化
 
 > 一句话：不是"教 AI 写 SQL"，是让它成为你的数据知识库 + 分析师 + 可视化专家。

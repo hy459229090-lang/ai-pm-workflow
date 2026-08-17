@@ -1,3 +1,5 @@
+> **⚠️ 已被替代**：本文档为旧版残留，已被 [[content/sources/06-evaluate|content/sources/06-evaluate.md]]（毛球 App 完整版）替代，仅作历史参考。请以 `content/sources/` 下的源稿为准。
+
 # 第 06 篇：AI 产出评估 — 什么时候该打回重做
 
 > 一句话：AI 给的东西，不是不能信，是不能直接用。

@@ -98,36 +98,42 @@ AI 做：收集信息、组织文档、模式化执行、多角度审视。
 | # | 标题 | 你将获得 | 状态 |
 |---|------|---------|------|
 | [03](content/sources/03-skills.md) | 把重复工作变成一句话：Skill 设计 | 3 个立刻可用的 Skill | **已发布** |
-| [04](content/sources/04-data-agent.md) | 数据取数自动化 | 自然语言写 SQL | 待发布 |
+| [04](content/sources/04-data-agent.md) | 数据取数自动化 | 自然语言写 SQL | **已发布** |
 
-### L3 上下文工程 — AI 开始"理解"你的项目
-
-| # | 标题 | 你将获得 | 状态 |
-|---|------|---------|------|
-| [05](docs/05-context-layer.md) | 上下文层设计：让 AI 有记忆 | 结构化的项目知识库 | 待发布 |
-| [06](docs/06-knowledge-org.md) | 知识组织：什么信息该喂给 AI | 信息分类方法论 | 待发布 |
-
-### L4 质量保障 — 产出可控可交付
+### L3 质量保障 — 产出可控可交付
 
 | # | 标题 | 你将获得 | 状态 |
 |---|------|---------|------|
-| [07](docs/07-review.md) | AI 产出不失控：Review 机制 | 质量保障流程 | **已发布** |
-| [08](docs/08-templates.md) | 模板与规范：让产出一致 | 可复用的模板系统 | 待发布 |
+| [05](content/sources/05-agent-team.md) | Agent Team：当一个人搞不定的时候 | 多 Agent 协作机制 | **已发布** |
+| [06](content/sources/06-evaluate.md) | AI 产出评估：什么时候该打回 | 一套清晰的评估标准 | **已发布** |
+| [07](content/sources/07-review.md) | AI 产出不失控：Review 机制 | 三道人类关卡 | **已发布** |
+| [08](content/sources/08-templates.md) | 模板与规范：让产出一致 | 可复用的模板系统 | 草稿 |
 
-### L5 多 Agent 协作 — 复杂任务也能跑通
-
-| # | 标题 | 你将获得 | 状态 |
-|---|------|---------|------|
-| [09](docs/09-multi-agent.md) | 从 1 到 N：多角色协作 | Agent 团队设计方法 | 待发布 |
-| [10](docs/10-jobs-queue.md) | 工作队列：JOBS 系统 | 任务调度机制 | 待发布 |
-| [11](docs/11-orchestrator.md) | 协调者：Orchestrator 设计 | 全局调度 Agent | 待发布 |
-
-### L6 持续演进 — 系统自我进化
+### L4 工作区治理 — 让系统自己会导航（2026-08 增量补充）
 
 | # | 标题 | 你将获得 | 状态 |
 |---|------|---------|------|
-| [12](docs/12-memory.md) | 三层记忆：让系统自我进化 | 持久化记忆系统 | 待发布 |
-| [13](docs/13-reflection.md) | 复盘与蒸馏 | 自我迭代机制 | 待发布 |
+| [09](content/sources/09-context-discipline.md) | 上下文纪律：AI 怎么读你的工作区 | 阅读规则，产出质量上一个台阶 | 草稿 |
+| [10](content/sources/10-workspace-governance.md) | 工作区治理：让每个目录自己会指路 | 目录 _INDEX 体系 + 规则空白登记 | 草稿 |
+| [11](content/sources/11-jobs-queue.md) | 工作队列：让任务不丢、不卡、可追 | 任务卡片 + 生命周期 | 草稿 |
+| [12](content/sources/12-version-governance.md) | 版本治理：让 AI 永远读对的正本 | 当前正本入口 _CURRENT | 草稿 |
+
+### L5 协作与入口 — 让系统越用越懂、人人都能用（2026-08 增量补充）
+
+| # | 标题 | 你将获得 | 状态 |
+|---|------|---------|------|
+| [13](content/sources/13-orchestration.md) | 编排与门禁：让多 Agent 协作有序可控 | Plan First + Launch Gate + 三视角审议 | 草稿 |
+| [14](content/sources/14-review-dual-track.md) | Review 双轨：规范性检查和内容判断分开 | 两个关卡各管一摊 | 草稿 |
+| [15](content/sources/15-readable-writing.md) | 对外文档可读性：让人看得懂 | 禁止内部代号，别让 AI 猜 | 草稿 |
+| [16](content/sources/16-memory-retro.md) | 三层记忆与复盘：系统自我进化 | Facts/教训/决策 + 复盘蒸馏 | 草稿 |
+| [17](content/sources/17-bot-on-im.md) | 在内部 IM 里跑 AI bot | 把 AI 工作流的入口搬到团队 IM | 草稿 |
+
+### 规划中
+
+| # | 标题 | 你将获得 | 状态 |
+|---|------|---------|------|
+| — | 三层记忆：让系统自我进化 | 持久化记忆系统 | 已并入第 16 篇 |
+| — | 复盘与蒸馏 | 自我迭代机制 | 已并入第 16 篇 |
 
 ---
 

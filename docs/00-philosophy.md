@@ -1,3 +1,5 @@
+> **⚠️ 已被替代**：本文档为旧版残留，已被 [[content/sources/00-philosophy|content/sources/00-philosophy.md]]（毛球 App 完整版）替代，仅作历史参考。请以 `content/sources/` 下的源稿为准。
+
 # 第 0 篇：设计哲学
 
 > 在开始搭建任何东西之前，先理解这套方法背后的思考方式。这篇不涉及具体操作，但它决定了你后续每一步的方向。

@@ -1,3 +1,5 @@
+> **⚠️ 已被替代**：本文档为旧版残留，已被 [[content/sources/05-agent-team|content/sources/05-agent-team.md]]（毛球 App 完整版）替代，仅作历史参考。请以 `content/sources/` 下的源稿为准。
+
 # 第 05 篇：Agent Team — 当一个人搞不定的时候
 
 > 一句话：Skill 是一个人的能力，Agent Team 是一群人的协作。但管理 14 个 AI，比我自己干活还累——直到我找到了正确的方法。

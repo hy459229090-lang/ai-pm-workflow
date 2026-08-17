@@ -1,3 +1,5 @@
+> **⚠️ 已被替代**：本文档为旧版残留，已被 [[content/sources/01-claude-md|content/sources/01-claude-md.md]]（毛球 App 完整版）替代，仅作历史参考。请以 `content/sources/` 下的源稿为准。
+
 # 第 01 篇：让 AI 理解你的项目 — CLAUDE.md
 
 > 一句话：用一个文件把你的项目背景喂给 AI，让它从"通用助手"变成"项目专家"。

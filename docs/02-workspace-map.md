@@ -1,3 +1,5 @@
+> **⚠️ 已被替代**：本文档为旧版残留，已被 [[content/sources/02-workspace-map|content/sources/02-workspace-map.md]]（毛球 App 完整版）替代，仅作历史参考。请以 `content/sources/` 下的源稿为准。
+
 # 第 02 篇：项目地图 — WORKSPACE_MAP
 
 > 一句话：让 AI 能自己找到任何文档，不用你每次指路。
