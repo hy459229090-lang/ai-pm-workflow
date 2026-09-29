@@ -22,14 +22,14 @@
 <a name="work"></a>
 <picture>
   <source media="(max-width: 640px)" srcset="assets/work-mobile.svg">
-  <img src="assets/work.svg" width="100%" alt="定义问题：先取数、分群、核对实现和成本，再作产品取舍。推进交付：把交互原型、接口试跑和配置校验接入工作流。检查质量：评估完整对话、检索和工具返回，归类失败并形成改动与回归检查。">
+  <img src="assets/work.svg" width="100%" alt="产品决策：同时对齐用户分层、业务目标、现有代码与成本。工作流工程：从单条提示词推进到资料正本、任务上下文、工具执行和验证标准。Agent 评测：从最终答案评分推进到完整执行过程诊断，定位失败并形成修改与回归检查。">
 </picture>
 
 <p><a href="notes/practice.md">看具体工作方式 →</a></p>
 
 <h3>最近在琢磨</h3>
 <p>助手怎样接好用户的下一步；个人数据怎样成为可控的长期记忆；AI 怎样真正改变游戏玩法。<br>
-这些是持续实践和探索的方向，不把原型写成成熟产品。</p>
+个人探索持续更新。</p>
 
 <a href="https://github.com/hy459229090-lang/ai-pm-workflow/issues/new?title=%5B%E4%BA%A4%E6%B5%81%5D%20&amp;body=%E6%88%91%E5%9C%A8%E5%81%9A%EF%BC%9A%0A%0A%E6%83%B3%E4%BA%A4%E6%B5%81%E7%9A%84%E9%97%AE%E9%A2%98%EF%BC%9A%0A%0A%EF%BC%88%E8%BF%99%E6%98%AF%E5%85%AC%E5%BC%80%E7%95%99%E8%A8%80%EF%BC%8C%E8%AF%B7%E5%8B%BF%E5%A1%AB%E5%86%99%E7%A7%81%E5%AF%86%E8%B5%84%E6%96%99%E3%80%82%EF%BC%89">
 <picture>
