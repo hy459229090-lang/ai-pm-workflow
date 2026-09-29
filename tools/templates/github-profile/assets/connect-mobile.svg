@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="196" viewBox="0 0 720 196" role="img" aria-labelledby="title desc"><title id="title">一起做点具体的事</title><desc id="desc">交流 C 端 Agent 产品、产研工作流改造，或早期产品验证。</desc><style>
+:root{--paper:#f3f0e8;--ink:#202c3a;--muted:#5c666f;--line:#d4d2ca;--accent:#aa4a32;--wash:#eae6dc;--navy:#263b52;--on:#f7f4ec;--fine:#dce1e5}
+@media(prefers-color-scheme:dark){:root{--paper:#17212e;--ink:#f0ede4;--muted:#a5b0ba;--line:#354353;--accent:#eea284;--wash:#1e2b3a;--navy:#c9d7e4;--on:#17212e;--fine:#4c5d70}}
+text{font-family:Inter,'Helvetica Neue',Arial,'Noto Sans CJK SC','Microsoft YaHei',sans-serif;fill:var(--ink)}
+.mono{font-family:'SFMono-Regular',Consolas,'Liberation Mono',monospace;letter-spacing:2px}
+.serif{font-family:Georgia,'Times New Roman',serif}
+.small{fill:var(--muted)}.accent{fill:var(--accent)}.line{stroke:var(--line);stroke-width:1}.paper{fill:var(--paper)}.wash{fill:var(--wash)}
+</style><rect width="720" height="196" rx="4" fill="var(--navy)"/><text x="35" y="73" font-size="37" font-weight="600" style="fill:var(--on)">一起做点具体的事。</text><text x="35" y="132" font-size="27" style="fill:var(--on);opacity:.8">C 端 Agent · 产研工作流</text><text x="35" y="172" font-size="27" style="fill:var(--on);opacity:.8">早期产品验证</text><path d="M595 95L655 35M608 35H655V82" fill="none" stroke="var(--on)" stroke-width="3"/></svg>
