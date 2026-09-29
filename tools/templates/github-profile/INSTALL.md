@@ -1,22 +1,19 @@
-# 将这份介绍显示在个人主页
+# RicHe 个人工作台 / v3
 
-当前文件位于独立分支的模板目录，未修改原仓库主分支。
+这一版使用个人网名、产品/系统/游戏键帽、职业存档与任务工作台建立统一视觉。只介绍职业方向、跨任务方法和个人探索主题，不展示内部业务数据、具体产品名或项目架构。
 
-GitHub 的个人主页 README 需要一个与你用户名相同的公开仓库：`hy459229090-lang/hy459229090-lang`。
+## 显示到 GitHub 个人主页
 
-1. 创建这个公开仓库，并勾选添加 README。
-2. 将本目录的 `README.md`、`assets/`、`notes/` 放到新仓库根目录，替换初始化的 README。
+将本目录的 README.md、assets/、notes/ 放进公开仓库 hy459229090-lang/hy459229090-lang 的根目录。无需启用 GitHub Pages。
 
-无需启用 GitHub Pages，无需运行服务，也不需要访问令牌。当前助手连接支持写已有仓库，但不提供新建仓库接口；仓库建好后，可让助手完成文件写入。
+目前这一版仅提交在 ai-pm-workflow 的 profile/homepage-v2-20260929 分支；分支名沿用前版，内容已更新为 v3。原项目主分支未更改。个人主页同名仓库尚未创建。
 
-联系入口暂时指向已存在的公开仓库 Issues。它是公开交流入口，不是私信；不应在其中填写联系方式、公司资料或其他敏感信息。后续可以换成你确认可公开的联系渠道。
+## 资源与兼容
 
-## 文件说明
+五组自包含 SVG，每组提供独立手机排版；README 使用 picture / source 选择素材。配色为固定的石墨黑、灰白与黄绿色，而不是依赖 GitHub 主题切换。小型信号动画为视觉装饰，遵循 prefers-reduced-motion；不是实时业务或运行指标。字体使用系统回退，不分发字体文件，不依赖第三方图片服务。
 
-- `README.md`：GitHub 上实际渲染的介绍。
-- `assets/`：自包含 SVG；无远程字体、无第三方统计图片、无脚本。
-- `notes/practice.md`：工作方式补充，保留实现边界，不披露业务细节。
+联系方式暂为现有仓库的公开 Issues，不是私信，不应提交隐私或公司资料。
 
-版式提供移动端素材，图片依据父页面配色适应深浅模式。正文链接、折叠英文介绍和图片替代文本保留为原生 HTML。
-
-任职经历以个人提供的信息为基础；公司名称仅描述履历，不代表公司背书或授权商业合作。
+官方说明：
+https://docs.github.com/en/account-and-profile/how-tos/profile-customization/managing-your-profile-readme
+https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/quickstart-for-writing-on-github
